@@ -1,7 +1,11 @@
+import './App.css';
 import React from 'react'
 import { Navbar,Nav,NavDropdown } from "react-bootstrap";
 
+
 export const Home = () => (
+  
+  <>
   <Navbar expand="lg" bg="light" variant="light">
   <Navbar.Brand>Anchit Rao sucks major ding dongs</Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -25,4 +29,10 @@ export const Home = () => (
     </Nav>
   </Navbar.Collapse>
 </Navbar>
+
+<div>
+  <input type="text" class = "Input" name="User's Item" placeholder="Item" aria-label="Recipient's username"/>
+  <button>Insert</button>
+</div>
+</>
 )   
