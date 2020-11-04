@@ -21,7 +21,7 @@ const db = mysql.createPool({
     host: "127.0.0.1",
     user: "root",
     password: "password",
-    database: "localborrowme"
+    database: "sys"
 })
 app.use(cors())
 app.use(express.json())
@@ -32,19 +32,20 @@ app.get("/",(req,res) =>
       
       res.send("hello you suck");
  })
-app.post("/api/insert",(req,res)=>{
+ app.post("/api/insert",(req,res)=>{
 
-        const userId = req.body.userId
-        const sqlInsert = "INSERT INTO user (userId,password,phoneNumber,email,address,score,friendsList) VALUES (?,'password','4087854666','dyshant@illinois','1234 Chad Ave','2','none');"
-        db.query(sqlInsert, [userId], (err,result)=>{
-            if (err) {
-                console.error('Database insert failed: ' + err.stack);
-                return;
-            }
-            else{
-                console.log(result)
-            }
-        })
+    const email = req.body.email
+    const password = req.body.password
+    const sqlInsert = "INSERT INTO user (UserName,Password,FirstName,LastName,Email,PhoneNumber,zipCode,Score) VALUES ('dyshant',?,'anchit','rao',?,'4086666666','61820','0');"
+    db.query(sqlInsert, [password,email], (err,result)=>{
+        if (err) {
+            console.error('Database insert failed: ' + err.stack);
+            return;
+        }
+        else{
+            console.log(result)
+        }
+    })
 })
 
 app.listen(3001, ()=> {console.log("running on 3001");});
