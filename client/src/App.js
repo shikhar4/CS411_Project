@@ -8,6 +8,7 @@ import Home from './Home';
 import Login from './Login';
 import Insert from './Insert';
 import Search from './search';
+import Delete from './Delete';
 
 
 import ReactDOM from 'react-dom';
@@ -26,6 +27,7 @@ class App extends Component {
             <li><Link to={'/home'} className="nav-link">Home</Link></li>
             <li><Link to={'/insert'} className="nav-link">Insert</Link></li>
             <li><Link to={'/search'} className="nav-link">Search</Link></li>
+            <li><Link to={'/delete'} className="nav-link">Delete</Link></li>
           </ul>
           </nav>
           <hr />
@@ -34,6 +36,7 @@ class App extends Component {
               <Route path='/home' component={Home} />
               <Route path='/insert' component={Insert} />
               <Route path='/search' component={Search} />
+              <Route path='/Delete' component={Delete} />
           </Switch>
         </div>
       </Router>
