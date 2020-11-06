@@ -4,10 +4,6 @@
   position: relative; left:-9px;
 }
 .Login_Page form {
-  /* margin-left: auto;
-  margin-right: auto;
-  
-  max-width: 320px; */
   margin: 0;
   position: absolute;
   top: 50%;
@@ -16,6 +12,24 @@
   transform: translate(-50%, -50%) 
 }
 
+.InputLabels{
+  display: inline-block;
+  float: left;
+  clear: left;
+  width: 100px;
+  text-align: left;
+}
+
+.submitInfoButton {
+  /* display: inline-block; */
+  float: left;
+  clear:left;
+  
+}
+
 .Input{
-  width:400px;
+  width:250px;
+  float: left;
+  text-align:left;
+  
 }

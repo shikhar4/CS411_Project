@@ -34,10 +34,31 @@ app.get("/",(req,res) =>
  })
  app.post("/api/insert",(req,res)=>{
 
-    const email = req.body.email
+    const user_name = req.body.UserName
     const password = req.body.password
-    const sqlInsert = "INSERT INTO user (UserName,Password,FirstName,LastName,Email,PhoneNumber,zipCode,Score) VALUES ('dyshant',?,'anchit','rao',?,'4086666666','61820','0');"
-    db.query(sqlInsert, [password,email], (err,result)=>{
+    const first_name = req.body.FirstName
+    const last_name = req.body.LastName
+    const email = req.body.Email
+    const phone = req.body.Phone
+    const zip = req.body.Zip
+    const sqlInsert = "INSERT INTO user (UserName,Password,FirstName,LastName,Email,PhoneNumber,zipCode,Score) VALUES (?,?,?,?,?,?,?,'0');"
+    db.query(sqlInsert, [user_name, password, first_name, last_name, email, phone, zip], (err,result)=>{
+        if (err) {
+            console.error('Database insert failed: ' + err.stack);
+            return;
+        }
+        else{
+            console.log(result)
+        }
+    })
+})
+
+app.post("/api/delete", (req,res)=>{
+    const user_name = req.body.user
+    const product_name = req.body.product
+
+    const sqlDelete = "DELETE FROM product WHERE userName = ? AND ProductName = ?"
+    db.query(sqlDelete,[user_name,product_name],(err,result)=>{
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
