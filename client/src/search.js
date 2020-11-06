@@ -1,42 +1,169 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
-
+const columnHeader =["productID","ProductName","type","dateBorrowed","dateDue","borrowerID"];
 const user_id = localStorage.getItem("user_id_global")
-var product
+var product_table =[];
+product_table.push({productID:0,type:0,dateBorrowed:0,dateDue:0,borrowerID:0,ProductName:0})
+var b = 0;
+function add_entry(productID,type,dateBorrowed,dateDue,borrowerID,ProductName){
+  product_table.push({productID,type,dateBorrowed,dateDue,borrowerID,ProductName})
+}
 class Search extends Component {
  
 
-  constructor(props){
-    super(props);
-    this.state = {
-          x: []
-    };
-   this.search = this.search.bind(this);
-};
+//   constructor(props){
+//     super(props);
+//     this.state={
+//              }
+//    this.generateHeader = this.generateHeader.bind(this);
+//    this.generateTableData = this.generateTableData.bind(this);
+//    this.search = this.search.bind(this);
+// };
+//    generateHeader(){
+//        let res=[];
+//      for(var i =0; i < columnHeader.length; i++){
+//          res.push(<th key={columnHeader[i]}>{columnHeader[i]}</th>)
+//      }
+//      return res;
+//    }
+//    generateTableData(){
+//        let res=[];
+//        let tableData = [
+//         {"id":"1","firstName":"Robert", "lastName":"Patel", "email": "123@GMAIL.COM", "gender" : "Male"},
+//         {"id":"2","firstName":"Robert", "lastName":"Patel", "email": "123@GMAIL.COM", "gender" : "Male"},
+//         {"id":"3","firstName":"Robert", "lastName":"Patel", "email": "123@GMAIL.COM", "gender" : "Male"},
+//         {"id":"4","firstName":"Robert", "lastName":"Patel", "email": "123@GMAIL.COM", "gender" : "Male"}
+//        ]
+//        for(var i =0; i < tableData.length; i++){
+//            res.push(
+//             <tr >
+//            <td key={tableData[i].id}>{tableData[i].id}</td>
+//            <td key={tableData[i].firstName}>{tableData[i].firstName}</td>
+//            <td key= {tableData[i].lastName}>{tableData[i].lastName}</td>
+//            <td key={tableData[i].email}>{tableData[i].email}</td>
+//            <td key={tableData[i].gender}>{tableData[i].gender}</td>
+//            </tr>
+//            )
+//        }
+//        return res;
+//    }
+//   search() {
+//     Axios.post('http://localhost:3001/api/search',
+//     {userID:1}).then((res)=>{
+//       console.log(res)   
+//       console.log(this.x)
+    
+//     })
+//   }
 
-  search() {
+//   render() {
+//     return (
+//       <>
+//       <h2>My Products</h2>
+//       <div>
+//         <h1>{product}</h1>
+//       <Button onClick={this.search}>Search</Button> 
+//       <table>
+//          <thead>
+//              <tr>
+//              {this.generateHeader()}
+//              </tr>
+//          </thead>
+//          <tbody>
+//              {this.generateTableData()}
+//          </tbody>
+//          </table>
+//       </div>
+
+//       </>
+//     );
+//   }
+// }
+
+
+
+
+
+
+// import React from 'react';
+// import employ from './employ.json';
+
+   constructor(props){
+       super(props);
+       this.state={
+       }
+       this.generateHeader = this.generateHeader.bind(this);
+       this.generateTableData = this.generateTableData.bind(this);
+       this.search = this.search.bind(this);
+      //  this.add_entry = this.add_entry(this);
+   }
+
+
+   generateHeader(){
+       let res=[];
+     for(var i =0; i < columnHeader.length; i++){
+         res.push(<th key={columnHeader[i]}>{columnHeader[i]}</th>)
+     }
+     return res;
+   }
+
+     search() {
     Axios.post('http://localhost:3001/api/search',
     {userID:1}).then((res)=>{
-      console.log(res)
-      this.setState({x:res.data[0]})
-      console.log(this.x)
+      var data = []
+      product_table = [];
+      for(var i = 0; i < res.data.length; i++)
+      { 
+        var x = res.data[i]
+        add_entry(x.productID,x.type,x.dateBorrowed,x.dateDue,x.borrowerID,x.ProductName)
+      }
+      //localStorage.setItem("Table_data", data)
     
     })
+     b= 1;
   }
 
-  render() {
-    return (
-      <>
-      <h2>My Products</h2>
-      <div>
-        <h1>{product}</h1>
-      <Button onClick={this.search}>Search</Button> 
-      </div>
-
-      </>
-    );
-  }
+   generateTableData(){
+    this.search();
+       let res=[];
+       let tableData = product_table;
+       if(b)
+       {
+       console.log(tableData.length)
+       }
+       //"productID","ProductName","type","dateBorrowed","dateDue","borrowerID"
+       for(var i =0; i < tableData.length; i++){
+           res.push(
+            <tr >
+           <td key={tableData[i].productID}>{tableData[i].productID}</td>
+           <td>{tableData[i].ProductName}</td>
+           <td>{tableData[i].type}</td>
+           <td>{tableData[i].dateBorrowed}</td>
+           <td >{tableData[i].dateDue}</td>
+           <td >{tableData[i].borrowerID}</td>
+           </tr>
+           )
+       }
+       return res;
+   }
+   render(){
+    
+       return(
+           <div>
+        <table className="table  table-hover">
+        <thead>
+            <tr>
+            {this.generateHeader()}
+            </tr>
+        </thead>
+        <tbody>
+            {this.generateTableData()}
+        </tbody>
+        </table>
+           </div>
+       )
+   }
 }
 
 export default Search;
