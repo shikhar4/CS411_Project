@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link, useLocation} from 'react-router-dom';
 import Login from './Login'
 
 
@@ -6,22 +7,12 @@ import Login from './Login'
 
 
 class Home extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-        userId:'',
-    };
-    this.set_User_name = this.set_User_name.bind(this); }
-    set_User_name()
-    {
-      console.log(Login.user_name_golbal);
-      this.setState({ userId: Login.user_name_golbal}); 
-    }
+
   render() {
-    const user_name = this.state.userId
+    const firstName = (localStorage.getItem("FirstName"))
     return (
         <div>
-          <h2>{user_name}</h2>
+          <h2>Welcome Back {firstName}!</h2>
         </div>
     );
   }

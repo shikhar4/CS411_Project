@@ -96,5 +96,23 @@ app.post("/api/login",(req,res)=>{
     })
 })
 
+app.post("/api/search", (req, res)=>{
+    const user_ID = req.body.userID
+
+    const sqlSearch = "SELECT * FROM Product WHERE userID = ?"
+    db.query(sqlSearch,[user_ID],(err, result)=>{
+        if (err) {
+            console.error('Database search for myProducts failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else {res.send({message:"empty products"})}
+        }
+    })
+})
+
 
 app.listen(3001, ()=> {console.log("running on 3001");});

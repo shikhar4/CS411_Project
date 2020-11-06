@@ -3,18 +3,21 @@ import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap"
 import {Link} from 'react-router-dom';
 import Axios from 'axios'
 import { useEffect,useState } from "react";
+import Home from './Home';
+import Search from './search';
 
 
-var user_name_golbal = "";
 
-class Login extends Component {
+class Login extends Component { 
   constructor(props){
     super(props);
     this.state = {
         userId:'',
         password:'',
         message: '',
-        LoggedIn: false
+        LoggedIn: false,
+        first_name: "",
+        user_id_gobal: '0'
     };
    this.handleChange_userid = this.handleChange_userid.bind(this); 
    this.handleChange_password = this.handleChange_password.bind(this);
@@ -32,10 +35,10 @@ login() {
     else
     {
       console.log(res.data[0].FirstName)
-      this.setState({ message:res.data[0].FirstName}); 
+      this.setState({ message:"Press Continue to Verify You Are Not A Robot"}); 
+      this.setState({first_name:res.data[0].FirstName})
+      this.setState({user_id_gobal: res.data[0].userID})
       this.setState({LoggedIn: true}) 
-      console.log(this.state.message)
-      user_name_golbal = (res.data[0].FirstName)
     }
     
 
@@ -46,21 +49,29 @@ login() {
       const messages = this.state.message;
       const LoggedIn = this.state.LoggedIn;
       var button;
+      const user = localStorage.setItem("FirstName", this.state.first_name)
+      const user_id = localStorage.setItem("user_id_global", this.state.user_id_gobal)
+      var welcome = "";
 
       if(!LoggedIn)
       {
         button = <Button onClick={this.login}>Login</Button> 
+        welcome = "Please enter Your Information"
       }
       else
       {
        button =  <Link to="/home">
-                 <Button>Start Borrowing</Button>
+                 <Button>Continue</Button>
                 </Link>
+       welcome = "";         
       }
     return (
       <>
+
+
       <h1 className = "BorrowMe_Title"></h1>
       <div className="Login_Page">
+      <h2> {welcome}</h2>
       <Form>
         <FormGroup controlId="Username">
           <FormLabel>Username</FormLabel>
@@ -73,7 +84,6 @@ login() {
         </FormGroup>
         <div>{button}</div>
       </Form>
-
       <h1> {messages} </h1>
       </div>
       </>

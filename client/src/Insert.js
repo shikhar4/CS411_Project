@@ -52,7 +52,7 @@ class Insert extends Component {
         <label className = "InputLabels">Last Name:</label><input type="text"  value = {this.state.lastName} onChange={this.handleChange_lastName} class = "Input" placeholder = "Last Name" />
         <label className = "InputLabels">Email:</label><input type="text"  value = {this.state.email} onChange={this.handleChange_email} class = "Input" placeholder = "Email" />
         <label className = "InputLabels">Phone:</label><input type="text"  value = {this.state.phoneNumber} onChange={this.handleChange_phoneNumber} class = "Input" placeholder = "Phone" />
-        <label className = "InputLabels">ZipCode:</label><input type="text"  value = {this.state.zipCode} onChange={this.handleChange_zipCode} class = "Input" placeholder = "zipCode" />
+        <label className = "InputLabels">ZipCode:</label><input type="text"  value = {this.state.zipCode} onChange={this.handleChange_zipCode} class = "Input" placeholder = "Zip Code" />
       </div>
 
       <button className = "submitInfoButton" onClick={this.submitUserId}>Submit Info</button>
