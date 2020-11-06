@@ -3,6 +3,7 @@ import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap"
 import {Link} from 'react-router-dom';
 import Axios from 'axios'
 import { useEffect,useState } from "react";
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import Home from './Home';
 import Search from './search';
 
@@ -60,9 +61,7 @@ login() {
       }
       else
       {
-       button =  <Link to="/home">
-                 <Button>Continue</Button>
-                </Link>
+       button =  <Redirect to ="/home"/> 
        welcome = "";         
       }
     return (
@@ -83,6 +82,7 @@ login() {
           <FormControl type = "password" value = {this.state.password} onChange={this.handleChange_password} class = "Input_login_password"/>
         </FormGroup>
         <div>{button}</div>
+        <Link to="/reg"><Button>Register</Button></Link>
       </Form>
       <h1> {messages} </h1>
       </div>

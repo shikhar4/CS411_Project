@@ -6,9 +6,10 @@ import { Navbar,Nav,NavDropdown } from "react-bootstrap";
 import Axios from 'axios'
 import Home from './Home';
 import Login from './Login';
-import Insert from './Insert';
+import register from './register';
 import Search from './search';
 import Delete from './Delete';
+import insert from './insert';
 
 
 import ReactDOM from 'react-dom';
@@ -33,8 +34,9 @@ class App extends Component {
           <hr />
           <Switch>
               <Route exact path='/' component={Login} />
+              <Route path = '/reg' component= {register}/>
               <Route path='/home' component={Home} />
-              <Route path='/insert' component={Insert} />
+              <Route path='/insert' component={insert} />
               <Route path='/search' component={Search} />
               <Route path='/Delete' component={Delete} />
           </Switch>
