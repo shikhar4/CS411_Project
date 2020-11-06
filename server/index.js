@@ -48,4 +48,32 @@ app.get("/",(req,res) =>
     })
 })
 
+
+app.post("/api/login",(req,res)=>{
+
+    const username = req.body.username
+    const password = req.body.password
+    const sql = "Select * From user Where UserName = ? AND Password = ?;"
+    console.log('here')
+    db.query(sql, [username,password], (err,result)=>{
+        if (err) {
+            console.error('Database search failed: ' + err.stack);
+            return;
+        } 
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                console.log(result.FirstName)
+                res.send(result);
+            }
+            else {
+                
+                res.send({message:"wrong shit try again pussy"});
+            }
+           
+        }
+    })
+})
+
+
 app.listen(3001, ()=> {console.log("running on 3001");});

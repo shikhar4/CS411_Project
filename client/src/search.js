@@ -4,7 +4,7 @@ class Search extends Component {
   render() {
     return (
         <div>
-          <h2>search</h2>
+          <h2>Search</h2>
         </div>
     );
   }
