@@ -46,6 +46,7 @@ class my_account extends Component {
     return (
       <>
         <h3>Registration Information</h3>
+        
         <div>
 
           <label className="InputLabels">Password:</label><input type="password" value={this.state.password} onChange={this.handleChange_password} class="Input" placeholder={this.state.password} />
@@ -55,7 +56,14 @@ class my_account extends Component {
           <label className="InputLabels">Phone:</label><input type="text" value={this.state.phoneNumber} onChange={this.handleChange_phoneNumber} class="Input" placeholder={this.state.phoneNumber} />
           <label className="InputLabels">ZipCode:</label><input type="text" value={this.state.zipCode} onChange={this.handleChange_zipCode} class="Input" placeholder={this.state.zipCode} />
         </div>
-        <div><Button onClick={this.submitupdate}>Submit</Button> </div>
+        <div>
+            <Link to= "/">
+            <Button onClick={this.submitupdate}>Submit</Button> 
+            </Link>
+            
+        </div>
+
+        <div><h3>Once you click submit it will ask you to relogin for security purposes!</h3></div>
       </>
 
     )
