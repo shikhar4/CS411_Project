@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 
-class insert extends Component {
+class insert1 extends Component {
 
   constructor(props) {
     super(props);
@@ -51,4 +51,4 @@ class insert extends Component {
 
 }
 
-export default insert; 
+export default insert1; 
