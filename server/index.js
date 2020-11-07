@@ -8,14 +8,14 @@ const con = mysql.createConnection({
     user: "root",
     password: "password"
 });
-con.connect(function(err) {
+con.connect(function (err) {
     if (err) {
-      console.error('Database connection failed: ' + err.stack);
-      return;
+        console.error('Database connection failed: ' + err.stack);
+        return;
     }
-  
+
     console.log('Connected to database.');
-  });
+});
 
 const db = mysql.createPool({
     host: "127.0.0.1",
@@ -25,14 +25,13 @@ const db = mysql.createPool({
 })
 app.use(cors())
 app.use(express.json())
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get("/",(req,res) =>
-  {
-      
-      res.send("hello you suck");
- })
- app.post("/api/insert",(req,res)=>{
+app.get("/", (req, res) => {
+
+    res.send("hello you suck");
+})
+app.post("/api/insert", (req, res) => {
 
     const user_name = req.body.UserName
     const password = req.body.password
@@ -42,45 +41,45 @@ app.get("/",(req,res) =>
     const phone = req.body.Phone
     const zip = req.body.Zip
     const sqlInsert = "INSERT INTO user (UserName,Password,FirstName,LastName,Email,PhoneNumber,zipCode,Score) VALUES (?,?,?,?,?,?,?,'0');"
-    db.query(sqlInsert, [user_name, password, first_name, last_name, email, phone, zip], (err,result)=>{
+    db.query(sqlInsert, [user_name, password, first_name, last_name, email, phone, zip], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
         }
-        else{
+        else {
             console.log(result)
         }
     })
 })
 
-app.post("/api/delete", (req,res)=>{
+app.post("/api/delete", (req, res) => {
     const user_name = req.body.user
     const product_name = req.body.product
 
     const sqlDelete = "DELETE FROM product WHERE userID = ? AND ProductName = ?"
-    db.query(sqlDelete,[user_name,product_name],(err,result)=>{
+    db.query(sqlDelete, [user_name, product_name], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
         }
-        else{
+        else {
             console.log(result)
         }
     })
 })
 
 
-app.post("/api/login",(req,res)=>{
+app.post("/api/login", (req, res) => {
 
     const username = req.body.username
     const password = req.body.password
     const sql = "Select * From user Where UserName = ? AND Password = ?;"
     console.log('here')
-    db.query(sql, [username,password], (err,result)=>{
+    db.query(sql, [username, password], (err, result) => {
         if (err) {
             console.error('Database search failed: ' + err.stack);
             return;
-        } 
+        }
         else {
             if (result.length > 0) {
                 console.log(result)
@@ -88,19 +87,19 @@ app.post("/api/login",(req,res)=>{
                 res.send(result);
             }
             else {
-                
-                res.send({message:"wrong shit try again pussy"});
+
+                res.send({ message: "wrong shit try again pussy" });
             }
-           
+
         }
     })
 })
 
-app.post("/api/search", (req, res)=>{
+app.post("/api/search", (req, res) => {
     const user_ID = req.body.userID
 
     const sqlSearch = "SELECT * FROM Product WHERE userID = ?"
-    db.query(sqlSearch,[user_ID],(err, result)=>{
+    db.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
             console.error('Database search for myProducts failed: ' + err.stack);
             return;
@@ -109,10 +108,47 @@ app.post("/api/search", (req, res)=>{
                 console.log(result)
                 res.send(result)
             }
-            else {res.send({message:"empty products"})}
+            else { res.send({ message: "empty products" }) }
+        }
+    })
+})
+
+app.post("/api/update", (req, res) => {
+    const zip_code = req.body.Zip
+    const user_ID = req.body.userID
+
+    const sqlUpdate = "UPDATE USER SET zipCode = ? WHERE userID = ?"
+    db.query(sqlUpdate, [zip_code, user_ID], (err, result) => {
+        if (err) {
+            console.error('Database update for User failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "you messed up" }) }
+        }
+    })
+})
+
+app.post("/api/insert_product", (req, res) => {
+
+    const userID = req.body.userID
+    const name = req.body.name
+    const type = req.body.type
+
+    const sqlInsert = "INSERT INTO Product (type, userID, ProductName) VALUES (?,?,?);"
+    db.query(sqlInsert, [type, userID, name], (err, result) => {
+        if (err) {
+            console.error('Database insert failed: ' + err.stack);
+            return;
+        }
+        else {
+            console.log(result)
         }
     })
 })
 
 
-app.listen(3001, ()=> {console.log("running on 3001");});
+app.listen(3001, () => { console.log("running on 3001"); });
