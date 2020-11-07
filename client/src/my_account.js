@@ -35,7 +35,7 @@ class my_account extends Component {
 
   submitupdate() {
     Axios.post('http://localhost:3001/api/update',
-      { userID: localStorage.getItem('user_id_global'), firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, phone: this.state.phoneNumber, Zip: this.state.zipCode }).then(() => {
+      { userID: localStorage.getItem('user_id_global'), password: this.state.password, firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, phone: this.state.phoneNumber, Zip: this.state.zipCode }).then(() => {
       })
 
   }
@@ -46,7 +46,7 @@ class my_account extends Component {
     return (
       <>
         <h3>Registration Information</h3>
-        
+
         <div>
 
           <label className="InputLabels">Password:</label><input type="text" value={this.state.password} onChange={this.handleChange_password} class="Input" placeholder={this.state.password} />
@@ -57,10 +57,10 @@ class my_account extends Component {
           <label className="InputLabels">ZipCode:</label><input type="text" value={this.state.zipCode} onChange={this.handleChange_zipCode} class="Input" placeholder={this.state.zipCode} />
         </div>
         <div>
-            <Link to= "/">
-            <Button onClick={this.submitupdate}>Submit</Button> 
-            </Link>
-            
+          <Link to="/">
+            <Button onClick={this.submitupdate}>Submit</Button>
+          </Link>
+
         </div>
 
         <div><h3>Once you click submit it will ask you to relogin for security purposes!</h3></div>

@@ -114,6 +114,7 @@ app.post("/api/search", (req, res) => {
 })
 
 app.post("/api/update", (req, res) => {
+    const password = req.body.password
     const firstName = req.body.firstName
     const lastName = req.body.lastName
     const email = req.body.email
@@ -121,8 +122,8 @@ app.post("/api/update", (req, res) => {
     const zip_code = req.body.Zip
     const user_ID = req.body.userID
 
-    const sqlUpdate = "UPDATE USER SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, zipCode = ? WHERE userID = ?"
-    db.query(sqlUpdate, [firstName, lastName, email, phone, zip_code, user_ID], (err, result) => {
+    const sqlUpdate = "UPDATE USER SET Password = ?, FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, zipCode = ? WHERE userID = ?"
+    db.query(sqlUpdate, [password, firstName, lastName, email, phone, zip_code, user_ID], (err, result) => {
         if (err) {
             console.error('Database update for User failed: ' + err.stack);
             return;
