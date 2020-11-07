@@ -110,7 +110,7 @@ class Search extends Component {
 
      search() {
     Axios.post('http://localhost:3001/api/search',
-    {userID:1}).then((res)=>{
+    {userID:localStorage.getItem("user_id_global")}).then((res)=>{
       var data = []
       product_table = [];
       for(var i = 0; i < res.data.length; i++)

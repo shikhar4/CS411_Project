@@ -16,7 +16,7 @@ class Delete extends Component{
 
     deleteEntry(){
         Axios.post('http://localhost:3001/api/delete',
-        {user:this.state.userName, product:this.state.productName}).then(()=>{
+        {user:localStorage.getItem("user_id_global"), product:this.state.productName}).then(()=>{
           alert('successful delete')
         })
         this.setState({ userName: ''}); 
@@ -27,7 +27,6 @@ class Delete extends Component{
         return(
             <>
             <h3>Delete Product</h3>
-            <label className = "InputLabels">User Name:</label><input type="text"  value = {this.state.userName} onChange={this.handleChange_userName} class = "Input" placeholder = "User Name" />
             <label className = "InputLabels">Product:</label><input type="text"  value = {this.state.productName} onChange={this.handleChange_productName} class = "Input" placeholder = "Produt Name" />
             
             <button className = "submitInfoButton" onClick={this.deleteEntry}>Delete Product</button>

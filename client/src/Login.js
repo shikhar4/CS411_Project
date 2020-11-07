@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
 import {Link} from 'react-router-dom';
 import Axios from 'axios'
-import { useEffect,useState } from "react";
 import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import Home from './Home';
 import Search from './search';
@@ -40,6 +39,13 @@ login() {
       this.setState({first_name:res.data[0].FirstName})
       this.setState({user_id_gobal: res.data[0].userID})
       this.setState({LoggedIn: true}) 
+
+      localStorage.setItem("firstname_global", res.data[0].FirstName);
+      localStorage.setItem("lastname_global", res.data[0].LastName);
+      localStorage.setItem("email_global", res.data[0].Email);
+      localStorage.setItem("phonenumber_global", res.data[0].PhoneNumber);
+      localStorage.setItem("zipcode_global", res.data[0].zipCode);
+      localStorage.setItem("password_global", res.data[0].password);
     }
     
 

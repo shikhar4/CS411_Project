@@ -1,6 +1,5 @@
 import './App.css';
 import React, {Component} from 'react'; 
-import { useEffect,useState } from "react";
 //import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
 import { Navbar,Nav,NavDropdown } from "react-bootstrap";
 import Axios from 'axios'
@@ -10,7 +9,7 @@ import register from './register';
 import Search from './search';
 import Delete from './Delete';
 import insert from './insert';
-
+import my_account from './my_account';
 
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -29,6 +28,7 @@ class App extends Component {
             <li><Link to={'/insert'} className="nav-link">Insert</Link></li>
             <li><Link to={'/search'} className="nav-link">Search</Link></li>
             <li><Link to={'/delete'} className="nav-link">Delete</Link></li>
+            <li><Link to={'/my_account'} className="nav-link">Account</Link></li>
           </ul>
           </nav>
           <hr />
@@ -39,6 +39,7 @@ class App extends Component {
               <Route path='/insert' component={insert} />
               <Route path='/search' component={Search} />
               <Route path='/Delete' component={Delete} />
+              <Route path='/my_account' component={my_account} />
           </Switch>
         </div>
       </Router>

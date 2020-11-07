@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
-import { useEffect,useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
 import {Link} from 'react-router-dom';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
-class Insert extends Component {
+class Register extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -97,5 +96,5 @@ handleChange_zipCode(evt) {
 
 }
 
-export default Insert;
+export default Register;
 

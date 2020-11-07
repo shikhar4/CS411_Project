@@ -57,7 +57,7 @@ app.post("/api/delete", (req,res)=>{
     const user_name = req.body.user
     const product_name = req.body.product
 
-    const sqlDelete = "DELETE FROM product WHERE userName = ? AND ProductName = ?"
+    const sqlDelete = "DELETE FROM product WHERE userID = ? AND ProductName = ?"
     db.query(sqlDelete,[user_name,product_name],(err,result)=>{
         if (err) {
             console.error('Database insert failed: ' + err.stack);
