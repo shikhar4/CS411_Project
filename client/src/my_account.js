@@ -35,7 +35,7 @@ class my_account extends Component {
 
   submitupdate() {
     Axios.post('http://localhost:3001/api/update',
-      { userID: localStorage.getItem('user_id_global'), Zip: this.state.zipCode }).then(() => {
+      { userID: localStorage.getItem('user_id_global'), firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, phone: this.state.phoneNumber, Zip: this.state.zipCode }).then(() => {
       })
 
   }
