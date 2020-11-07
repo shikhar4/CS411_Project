@@ -49,7 +49,7 @@ class my_account extends Component {
         
         <div>
 
-          <label className="InputLabels">Password:</label><input type="password" value={this.state.password} onChange={this.handleChange_password} class="Input" placeholder={this.state.password} />
+          <label className="InputLabels">Password:</label><input type="text" value={this.state.password} onChange={this.handleChange_password} class="Input" placeholder={this.state.password} />
           <label className="InputLabels">First Name:</label><input type="text" value={this.state.firstName} onChange={this.handleChange_firstName} class="Input" placeholder={this.state.firstName} />
           <label className="InputLabels">Last Name:</label><input type="text" value={this.state.lastName} onChange={this.handleChange_lastName} class="Input" placeholder={this.state.lastName} />
           <label className="InputLabels">Email:</label><input type="text" value={this.state.email} onChange={this.handleChange_email} class="Input" placeholder={this.state.email} />
