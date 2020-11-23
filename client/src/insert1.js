@@ -33,7 +33,8 @@ class insert1 extends Component {
         <h3>Registration Information</h3>
         <div>
           <label className="InputLabels">Product Name: </label><input type="text" value={this.state.productName} onChange={this.handleChange_productName} class="Input" placeholder="Name" />
-          <label className="InputLabels">Product Type: </label><input type="text" value={this.state.type} onChange={this.handleChange_type} class="Input" placeholder="type" />
+          <text></text>
+          <label className="InputLabels">Product Type: </label><input type="text" value={this.state.type} onChange={this.handleChange_type} class="Input" placeholder="Books,Home,Electronics,Games, or Tools" />
         </div>
         <div><Button onClick={this.submitproduct}>Submit</Button> </div>
       </>

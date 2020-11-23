@@ -27,7 +27,7 @@ class Delete extends Component{
         return(
             <>
             <h3>Delete Product</h3>
-            <label className = "InputLabels">Product:</label><input type="text"  value = {this.state.productName} onChange={this.handleChange_productName} class = "Input" placeholder = "Produt Name" />
+            <label className = "InputLabels">Product:</label><input type="text"  value = {this.state.productName} onChange={this.handleChange_productName} class = "Input" placeholder = "Product Name" />
             
             <button className = "submitInfoButton" onClick={this.deleteEntry}>Delete Product</button>
             </>

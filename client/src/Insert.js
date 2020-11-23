@@ -30,7 +30,7 @@ class insert extends Component {
   render() {
     return (
       <>
-        <h3>Registration Information</h3>
+        <h3>Insert Product Information</h3>
         <div>
           <label className="InputLabels">Product Name: </label><input type="text" value={this.state.productName} onChange={this.handleChange_productName} class="Input" placeholder="Name" />
           <label className="InputLabels">Product Type: </label><input type="text" value={this.state.type} onChange={this.handleChange_type} class="Input" placeholder="type" />

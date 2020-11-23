@@ -3,10 +3,13 @@ const app = express()
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+
+
 const con = mysql.createConnection({
     host: "127.0.0.1",
     user: "root",
-    password: "password"
+    password: "password",
+    database: "sys"
 });
 con.connect(function (err) {
     if (err) {
@@ -17,15 +20,10 @@ con.connect(function (err) {
     console.log('Connected to database.');
 });
 
-const db = mysql.createPool({
-    host: "127.0.0.1",
-    user: "root",
-    password: "password",
-    database: "sys"
-})
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
 
@@ -41,7 +39,7 @@ app.post("/api/insert", (req, res) => {
     const phone = req.body.Phone
     const zip = req.body.Zip
     const sqlInsert = "INSERT INTO user (UserName,Password,FirstName,LastName,Email,PhoneNumber,zipCode,Score) VALUES (?,?,?,?,?,?,?,'0');"
-    db.query(sqlInsert, [user_name, password, first_name, last_name, email, phone, zip], (err, result) => {
+    con.query(sqlInsert, [user_name, password, first_name, last_name, email, phone, zip], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
@@ -57,7 +55,7 @@ app.post("/api/delete", (req, res) => {
     const product_name = req.body.product
 
     const sqlDelete = "DELETE FROM product WHERE userID = ? AND ProductName = ?"
-    db.query(sqlDelete, [user_name, product_name], (err, result) => {
+    con.query(sqlDelete, [user_name, product_name], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
@@ -75,7 +73,7 @@ app.post("/api/login", (req, res) => {
     const password = req.body.password
     const sql = "Select * From user Where UserName = ? AND Password = ?;"
     console.log('here')
-    db.query(sql, [username, password], (err, result) => {
+    con.query(sql, [username, password], (err, result) => {
         if (err) {
             console.error('Database search failed: ' + err.stack);
             return;
@@ -99,7 +97,7 @@ app.post("/api/search", (req, res) => {
     const user_ID = req.body.userID
 
     const sqlSearch = "SELECT * FROM Product WHERE userID = ?"
-    db.query(sqlSearch, [user_ID], (err, result) => {
+    con.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
             console.error('Database search for myProducts failed: ' + err.stack);
             return;
@@ -123,7 +121,7 @@ app.post("/api/update", (req, res) => {
     const user_ID = req.body.userID
 
     const sqlUpdate = "UPDATE USER SET Password = ?, FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, zipCode = ? WHERE userID = ?"
-    db.query(sqlUpdate, [password, firstName, lastName, email, phone, zip_code, user_ID], (err, result) => {
+    con.query(sqlUpdate, [password, firstName, lastName, email, phone, zip_code, user_ID], (err, result) => {
         if (err) {
             console.error('Database update for User failed: ' + err.stack);
             return;
@@ -144,7 +142,7 @@ app.post("/api/insert_product", (req, res) => {
     const type = req.body.type
 
     const sqlInsert = "INSERT INTO Product (type, userID, ProductName) VALUES (?,?,?);"
-    db.query(sqlInsert, [type, userID, name], (err, result) => {
+    con.query(sqlInsert, [type, userID, name], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
@@ -155,5 +153,31 @@ app.post("/api/insert_product", (req, res) => {
     })
 })
 
+//mogno db connection
+
+
+
+
+const { MongoClient } = require("mongodb");
+// Replace the uri string with your MongoDB deployment's connection string.
+const uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const client = new MongoClient(uri);
+async function run() {
+  try {
+    await client.connect();
+    const database = client.db('BorrowMe');
+    const collection = database.collection('User');
+    // Query for a movie that has the title 'Back to the Future'
+    const movie = await collection.find().toArray(function(err, result) {
+        if (err) throw err;
+          console.log(result);
+    })
+    console.log(movie);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 app.listen(3001, () => { console.log("running on 3001"); });
