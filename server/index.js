@@ -140,9 +140,12 @@ app.post("/api/insert_product", (req, res) => {
     const userID = req.body.userID
     const name = req.body.name
     const type = req.body.type
-
-    const sqlInsert = "INSERT INTO Product (type, userID, ProductName) VALUES (?,?,?);"
-    con.query(sqlInsert, [type, userID, name], (err, result) => {
+    const b = req.body.brandName
+    const m = req.body.modelNumber
+    const r = req.body.releaseYear
+    const c = req.body.color
+    const sqlInsert = "INSERT INTO Product (`ProductName`, `type`, `brandName`, `modelNumber`, `releaseYear`, `color`, `userID`) VALUES ( ?,?,?,?,?,?,?);"
+    con.query(sqlInsert, [name, type, b,m,r,c,userID], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;

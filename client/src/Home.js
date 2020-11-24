@@ -75,6 +75,7 @@ class Home extends Component {
     
        return(
            <div>
+             <h3>My Items</h3>
         <table className="table  table-hover">
         <thead>
             <tr>
