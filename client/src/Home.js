@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
-const columnHeader =["productID","ProductName","type","dateBorrowed","dateDue","borrowerID"];
+const columnHeader =["ProductID","ProductName","Type","BrandName","ModelNumber","ReleaseYear", "Color"];
 const user_id = localStorage.getItem("user_id_global")
 var product_table =[];
-product_table.push({productID:0,type:0,dateBorrowed:0,dateDue:0,borrowerID:0,ProductName:0})
+product_table.push({productID:0,ProductName:0,type:0,BrandName:0,ModelNumber:0,ReleaseYear:0, Color:0})
 var b = 0;
-function add_entry(productID,type,dateBorrowed,dateDue,borrowerID,ProductName){
-  product_table.push({productID,type,dateBorrowed,dateDue,borrowerID,ProductName})
+function add_entry(productID,ProductName,type,BrandName,ModelNumber,ReleaseYear,Color){
+  product_table.push({productID,ProductName,type,BrandName,ModelNumber,ReleaseYear,Color})
 }
 class Home extends Component {
 
@@ -38,7 +38,8 @@ class Home extends Component {
       for(var i = 0; i < res.data.length; i++)
       { 
         var x = res.data[i]
-        add_entry(x.productID,x.type,x.dateBorrowed,x.dateDue,x.borrowerID,x.ProductName)
+        console.log(x)
+        add_entry(x.productID,x.ProductName,x.type,x.brandName,x.modelNumber,x.releaseYear,x.color)
       }
       //localStorage.setItem("Table_data", data)
     
@@ -54,16 +55,17 @@ class Home extends Component {
        {
        console.log(tableData.length)
        }
-       //"productID","ProductName","type","dateBorrowed","dateDue","borrowerID"
+       //""ProductID","Product Name","Type","Brand Name","Model Number","Release Year", "Color""
        for(var i =0; i < tableData.length; i++){
            res.push(
             <tr >
            <td key={tableData[i].productID}>{tableData[i].productID}</td>
            <td>{tableData[i].ProductName}</td>
            <td>{tableData[i].type}</td>
-           <td>{tableData[i].dateBorrowed}</td>
-           <td >{tableData[i].dateDue}</td>
-           <td >{tableData[i].borrowerID}</td>
+           <td>{tableData[i].BrandName}</td>
+           <td >{tableData[i].ModelNumber}</td>
+           <td >{tableData[i].ReleaseYear}</td>
+           <td >{tableData[i].Color}</td>
            </tr>
            )
        }
