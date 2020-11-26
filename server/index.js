@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const app2 = express()
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -24,6 +25,7 @@ app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
+
 
 app.get("/", (req, res) => {
 
@@ -159,13 +161,38 @@ app.post("/api/insert_product", (req, res) => {
 // mongodb connection
 
 var mongoose = require('mongoose');
+const userModel = require('./user');
 
+var uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/BorrowMe?retryWrites=true&w=majority";
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+const connection = mongoose.connection;
+connection.once('open', () => {
+    console.log("MongoDB database connection established successfully");
+});
 
-var uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
-mongoose.connect(uri,  { useNewUrlParser: true });
+var apple;
 
-var mdb = mongoose.connection;
-
+app.get('/foods', async (req, res) => {
+    let foods = await userModel.find();
+    try {
+       console.log(userModel) 
+      
+      console.log(foods) 
+      res.send(foods);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+  
+app.post('/post',async function (req, res) {
+    const question = new userModel(req.body);
+    try {
+        await question.save();
+        res.status(201).send({message: "OK", data: question});
+    } catch (err) {
+        res.status(404).send({message: "Error", data: err})
+    }
+});
 
 app.post("/api/not_friends", (req, res) => {
     const userID = req.body.userID
@@ -196,8 +223,5 @@ app.post("/api/not_friends", (req, res) => {
         }
     })
 })
-
-
-
 
 app.listen(3001, () => { console.log("running on 3001"); });
