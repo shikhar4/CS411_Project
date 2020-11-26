@@ -30,7 +30,7 @@ class Home extends Component {
      return res;
    }
 
-     search() {
+    search() {
     Axios.post('http://localhost:3001/api/search',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
       var data = []

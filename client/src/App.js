@@ -10,6 +10,7 @@ import Search from './search';
 import Delete from './Delete';
 import insert1 from './insert1';
 import my_account from './my_account';
+import BorrowedItems from './BorrowedItems';
 
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -29,6 +30,7 @@ class App extends Component {
               <li><Link to={'/search'} className="nav-link">Search</Link></li>
               <li><Link to={'/delete'} className="nav-link">Delete</Link></li>
               <li><Link to={'/my_account'} className="nav-link">Account</Link></li>
+              <li><Link to={'/borrowed_items'} className="nav-link">My Borrowed Items</Link></li>
             </ul>
           </nav>
           <hr />
@@ -40,6 +42,7 @@ class App extends Component {
             <Route path='/search' component={Search} />
             <Route path='/Delete' component={Delete} />
             <Route path='/my_account' component={my_account} />
+            <Route path='/borrowed_items' component={BorrowedItems} />
           </Switch>
         </div>
       </Router>
