@@ -83,8 +83,8 @@ class Search extends Component {
 
   borrowItem(Username,ProductName,type,brandName,productID,userID){
     var today = new Date();
-    var BorrowDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate()
-    var DueDate = today.getFullYear() + '-' + today.getMonth() + '-' + (today.getDate()+7)
+    var BorrowDate = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate()
+    var DueDate = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + (today.getDate()+7)
    
     Axios.post('http://localhost:3001/api/borrow_product', 
     {ProductID: productID, BorrowerID: localStorage.getItem('user_id_global'), OwnerID: userID, dueDate: DueDate, borrowDate: BorrowDate})
