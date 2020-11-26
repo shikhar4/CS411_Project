@@ -172,17 +172,39 @@ connection.once('open', () => {
 
 var apple;
 
-app.get('/mongo/find', async (req, res) => {
-    let u_id = req.body
-    let foods = await userModel.find();
-    try {
-       console.log(userModel) 
-      
-      console.log(foods) 
+app.post('/mongo/find', async (req, res) => {
+    var friends_list;
+    let u_id = req.body.userID
+    console.log(u_id)
+    let query = {user_id: u_id}
+    let foods = await userModel.find(query);
+    try { 
+      console.log(foods)
       res.send(foods);
+      friends_list = foods[0].friend_list
     } catch (err) {
       res.status(500).send(err);
     }
+    
+
+//try to find all users
+    const sql = "Select * From user where userID <> ?"
+    con.query(sql, u_id, (err, result) => {
+            if (result.length > 0) {
+                console.log(result)
+            }
+    })
+
+
+
+
+
+
+
+
+
+
+
   });
   
 app.post('/mongo/add',async function (req, res) {
