@@ -63,7 +63,7 @@ login() {
 
       if(!LoggedIn)
       {
-        button = <Button onClick={this.login}>Login</Button> 
+        button = <Button className = "LoginButton" onClick={this.login}>Login</Button> 
         welcome = "Please enter Your Information"
       }
       else
@@ -77,21 +77,24 @@ login() {
 
       <h1 className = "BorrowMe_Title"></h1>
       <div className="Login_Page">
-      <h2> {welcome}</h2>
-      <Form>
-        <FormGroup controlId="Username">
+      {/* <div class="form-group"> */}
+      <div className="header">Login</div>
+      <Form className = "customForm">
+        <FormGroup className = "customFormGroup" controlId="Username">
           <FormLabel>Username</FormLabel>
-          <FormControl type = "email" value = {this.state.userId} onChange={this.handleChange_userid} class = "Input_login"/>
+          <FormControl type = "email" value = {this.state.userId} onChange={this.handleChange_userid} className = "form_inputs"/>
+          <small className = "errorMessage"> {messages} </small>
         </FormGroup>
 
-        <FormGroup controlId="Password">
+        <FormGroup className = "customFormGroup" controlId="Password">
           <FormLabel>Password</FormLabel>
-          <FormControl type = "password" value = {this.state.password} onChange={this.handleChange_password} class = "Input_login_password"/>
+          <FormControl type = "password" value = {this.state.password} onChange={this.handleChange_password} className = "form_inputs"/>
         </FormGroup>
         <div>{button}</div>
-        <Link to="/reg"><Button>Register</Button></Link>
+        <Link to="/reg"><Button className = "RegisterButton">Register</Button></Link>
       </Form>
-      <h1> {messages} </h1>
+      
+      {/* </div> */}
       </div>
       </>
     )
