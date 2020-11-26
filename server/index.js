@@ -86,7 +86,7 @@ app.post("/api/login", (req, res) => {
             }
             else {
 
-                res.send({ message: "Wrong UserName/Password" });
+                res.send({ message: "Wrong Username/Password" });
             }
 
         }

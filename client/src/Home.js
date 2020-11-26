@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
+import {Link} from 'react-router-dom';
 const columnHeader =["ProductID","ProductName","Type","BrandName","ModelNumber","ReleaseYear", "Color"];
 const user_id = localStorage.getItem("user_id_global")
 var product_table =[];
@@ -18,6 +19,7 @@ class Home extends Component {
        this.generateHeader = this.generateHeader.bind(this);
        this.generateTableData = this.generateTableData.bind(this);
        this.search = this.search.bind(this);
+       this.clearAccountInfo = this.clearAccountInfo.bind(this);
       //  this.add_entry = this.add_entry(this);
    }
 
@@ -33,7 +35,6 @@ class Home extends Component {
     search() {
     Axios.post('http://localhost:3001/api/search',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
-      var data = []
       product_table = [];
       for(var i = 0; i < res.data.length; i++)
       { 
@@ -71,9 +72,18 @@ class Home extends Component {
        }
        return res;
    }
+   clearAccountInfo(){
+    localStorage.setItem("firstname_global", "");
+    localStorage.setItem("lastname_global", "");
+    localStorage.setItem("email_global", "");
+    localStorage.setItem("phonenumber_global", "");
+    localStorage.setItem("zipcode_global", "");
+    localStorage.setItem("password_global", "");
+   }
    render(){
     
        return(
+         <>
            <div>
              <h3>My Items</h3>
         <table className="table  table-hover">
@@ -83,10 +93,12 @@ class Home extends Component {
             </tr>
         </thead>
         <tbody>
-            {this.generateTableData()}
+            {this.generateTableData()}  
         </tbody>
         </table>
            </div>
+        <div><Link to = '/'><Button onClick={this.clearAccountInfo}>Log Out</Button></Link></div>
+        </>
        )
    }
 }
