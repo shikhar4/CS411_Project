@@ -158,34 +158,13 @@ app.post("/api/insert_product", (req, res) => {
 
 // mongodb connection
 
+var mongoose = require('mongoose');
 
 
+var uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
+mongoose.connect(uri,  { useNewUrlParser: true });
 
-const { MongoClient } = require("mongodb");
-// Replace the uri string with your MongoDB deployment's connection string.
-const uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
-const client = new MongoClient(uri);
-async function run() {
-  try {
-    await client.connect();
-    const database = client.db('BorrowMe');
-    const collection = database.collection('User');
-    const userID = req.body.userID
-    // Query for a movie that has the title 'Back to the Future'
-    const query = {user_id: userID};
-    const friends_list = await collection.find().toArray(function(err, result) {
-        if (err) throw err;
-          console.log(result);
-    })
-    console.log(friends_list);
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
-
-app.listen(3001, () => { console.log("running on 3001"); });
+var mdb = mongoose.connection;
 
 
 app.post("/api/not_friends", (req, res) => {
@@ -201,10 +180,10 @@ app.post("/api/not_friends", (req, res) => {
         }
     }
 
-    const temp = tempID
+    const friends = tempID
     const sqlUpdate = "SELECT userID, zip* FROM Users WHERE userID NOT IN ('?')"
 
-    con.query(sqlUpdate, [tempID], (err, result) => {
+    con.query(sqlUpdate, [friends], (err, result) => {
         if (err) {
             console.error('Database update for User failed: ' + err.stack);
             return;
@@ -217,3 +196,8 @@ app.post("/api/not_friends", (req, res) => {
         }
     })
 })
+
+
+
+
+app.listen(3001, () => { console.log("running on 3001"); });
