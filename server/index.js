@@ -172,7 +172,8 @@ connection.once('open', () => {
 
 var apple;
 
-app.get('/foods', async (req, res) => {
+app.get('/mongo/find', async (req, res) => {
+    let u_id = req.body
     let foods = await userModel.find();
     try {
        console.log(userModel) 
@@ -184,7 +185,7 @@ app.get('/foods', async (req, res) => {
     }
   });
   
-app.post('/post',async function (req, res) {
+app.post('/mongo/add',async function (req, res) {
     const question = new userModel(req.body);
     try {
         await question.save();
