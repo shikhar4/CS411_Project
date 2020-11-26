@@ -156,7 +156,7 @@ app.post("/api/insert_product", (req, res) => {
     })
 })
 
-//mogno db connection
+// mongodb connection
 
 
 
@@ -170,12 +170,14 @@ async function run() {
     await client.connect();
     const database = client.db('BorrowMe');
     const collection = database.collection('User');
+    const userID = req.body.userID
     // Query for a movie that has the title 'Back to the Future'
-    const movie = await collection.find().toArray(function(err, result) {
+    const query = {user_id: userID};
+    const friends_list = await collection.find().toArray(function(err, result) {
         if (err) throw err;
           console.log(result);
     })
-    console.log(movie);
+    console.log(friends_list);
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
@@ -184,3 +186,34 @@ async function run() {
 run().catch(console.dir);
 
 app.listen(3001, () => { console.log("running on 3001"); });
+
+
+app.post("/api/not_friends", (req, res) => {
+    const userID = req.body.userID
+
+    var temp = "";
+    temp += userID;
+
+    for (i = 0; i < friends_list.length; i++) {
+        temp += friends_list[i];
+        if (i != friends_list.length - 1) {
+            temp += ", ";
+        }
+    }
+
+    const temp = tempID
+    const sqlUpdate = "SELECT userID, zip* FROM Users WHERE userID NOT IN ('?')"
+
+    con.query(sqlUpdate, [tempID], (err, result) => {
+        if (err) {
+            console.error('Database update for User failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "you messed up" }) }
+        }
+    })
+})
