@@ -74,7 +74,6 @@ app.post("/api/login", (req, res) => {
     const username = req.body.username
     const password = req.body.password
     const sql = "Select * From user Where UserName = ? AND Password = ?;"
-    console.log('here')
     con.query(sql, [username, password], (err, result) => {
         if (err) {
             console.error('Database search failed: ' + err.stack);
@@ -186,24 +185,43 @@ app.post('/mongo/find', async (req, res) => {
       res.status(500).send(err);
     }
     
-
-//try to find all users
-    const sql = "Select * From user where userID <> ?"
-    con.query(sql, u_id, (err, result) => {
-        if (result.length > 0) {
-            console.log(result)
-        }
-        var new_list = [];
-
-        for (const res of result) {
-            new_list.push(res.userID)
-        }
-        console.log("List of all users besides current: ", new_list);
-        console.log("Friends List: ", friends_list);
-        console.log("Differences in friends: ", diff_arr(new_list, friends_list));
-    })
+// var not_friends = [];
+// var new_list = [];
+// var zip = [];
+// //try to find all users
+//     const sql = "Select userID, zipCode From user where userID <> ?"
+//      con.query(sql, u_id, (err, result) => {
+//         if (result.length > 0) {
+//             for (const res of result) {
+//                 new_list.push(res.userID)
+//                 zip.push(res.zipCode)
+//             }
+//             res.send(result)
+//         }
+       
+//     })
+//     console.log(zip)
+ 
   });
   
+  app.post("/mongo/find_notfriends", (req, res) => {
+    const user_ID = req.body.userID
+   
+    const sqlSearch = "SELECT userID FROM user WHERE userID <> ?"
+    con.query(sqlSearch, [user_ID], (err, result) => {
+        if (err) {
+            console.error('Database search for myProducts failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "empty products" }) }
+        }
+    })
+})
+
 app.post('/mongo/add',async function (req, res) {
     const question = new userModel(req.body);
     try {
