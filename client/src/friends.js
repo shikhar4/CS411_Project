@@ -28,6 +28,12 @@ add_zip_info(zipCode){
     }))
   
   }
+add_lat_long_info(lat_long){
+  const lat_long_arr = {lat_long}
+  this.setState(prevState => ({
+    lat_long: [...prevState.lat_long, lat_long_arr]
+  }))
+}
 
 calculate_distance(lat1,lon1,lat2,lon2){
   const R = 6371e3; // metres
@@ -53,6 +59,7 @@ Friend_Recommender(user_id)
     Axios.post('http://localhost:3001/mongo/find',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
        // console.log(res.data[0].friend_list)
+        console.log(res.data)
         for(var i = 0; i < res.data.length; i++)
         { 
           var x = res.data[0].friend_list[i]
@@ -62,7 +69,7 @@ Friend_Recommender(user_id)
         }
     
       })
-
+      console.log(f)
       //console.log("before second for loop")
       Axios.post('http://localhost:3001/mongo/find_notfriends',
       {userID:localStorage.getItem("user_id_global"), f: friends1}).then((res)=>{
@@ -109,29 +116,21 @@ Friend_Recommender(user_id)
         }
         //console.log(not_friends)
         this.setState({zipcodes:[]})
+        let promsArr = []
+
         for(var i = 0; i < not_friends.length; i++)
         {
   
-               Axios.post('http://localhost:3001/find_zipcodes',
-                 {userID:localStorage.getItem("user_id_global"), not_friends: not_friends[i]}).then((res)=>{
-                      //console.log(res.data)
-                       
-                      // var xx = res.data[0].zipCode;
-                      // z = z + " ";
-                      // z = z + JSON.stringify(xx);
-                      var zip_arr = res.data[0].zipCode; 
-                      //console.log(zip_arr)
-                      this.setState(prevState => ({
-                        zipcodes: [...prevState.zipcodes, zip_arr]
-                      }))
-                      
-
-                 })
+               promsArr.push(Axios.post('http://localhost:3001/find_zipcodes',
+                 {userID:localStorage.getItem("user_id_global"), not_friends: not_friends[i]})
+                 )
             
             //console.log(this.state.zipcodes) 
-          }
-          var new_zipcodes = this.state.zipcodes
-          this.setState({zipcodes:[]})
+        }
+        Promise.all(promsArr).then(resp=>{console.log("data",resp);}).catch(err => {console.log(err)})
+
+        var new_zipcodes = this.state.zipcodes
+          //this.setState({zipcodes:[]})
           // var user_zip = localStorage.getItem("zipcode_global");
           // console.log(user_zip)
           // this.setState(prevState => ({
@@ -140,44 +139,42 @@ Friend_Recommender(user_id)
           //console.log(not_friends)
          
         //const {zipcode} = this.state.zipcodes[0]
-        this.setState({lat_long:[]})
-        for(var i = 0; i < new_zipcodes.length; i++)
-        {
+        // this.setState({lat_long:[]})
+        // for(var i = 0; i < new_zipcodes.length; i++)
+        // {
   
-               Axios.post('http://localhost:3001/find_coordinates',
-                 { zipcodes: new_zipcodes[i]}).then((res)=>{
-                     // console.log(res.data)
+        //        Axios.post('http://localhost:3001/find_coordinates',
+        //          { zipcodes: new_zipcodes[i]}).then((res)=>{
+        //              // console.log(res.data)
                        
-                      // var xx = res.data[0].zipCode;
-                      // z = z + " ";
-                      // z = z + JSON.stringify(xx);
-                      // var zip_arr = res.data[0].zipCode; 
-                      // console.log(zip_arr)
-                      // this.setState(prevState => ({
-                      //   zipcodes: [...prevState.zipcodes, zip_arr]
-                      // }))
-                      var lat_long_arr = res.data[0]
-                      this.setState(prevState => ({
-                        lat_long: [...prevState.lat_long, lat_long_arr]
-                      }))
-                      //console.log(this.state.lat_long)
+        //               // var xx = res.data[0].zipCode;
+        //               // z = z + " ";
+        //               // z = z + JSON.stringify(xx);
+        //               // var zip_arr = res.data[0].zipCode; 
+        //               // console.log(zip_arr)
+        //               // this.setState(prevState => ({
+        //               //   zipcodes: [...prevState.zipcodes, zip_arr]
+        //               // }))
+        //               var lat_long_arr = res.data[0]
+        //               this.add_lat_long_info(lat_long_arr)
+        //               //console.log(this.state.lat_long)
 
-                 })
+        //          })
             
             
-          }
+        //   }
           
           
-          for(var i =0; i<this.state.lat_long.length; i++){
-            var not_friend_lat = this.state.lat_long[i].lat; 
-            var not_friend_lon = this.state.lat_long[i].lng;
-            var user_lat = 41.76365; 
-            var user_lon = -88.14514;
-            var dist_meter = this.calculate_distance(user_lat,user_lon,not_friend_lat,not_friend_lon)
-            var dist_mile = dist_meter * 0.000621371
-            console.log(i,dist_mile)
-          }
-          console.log(this.state.zipcodes) 
+        //   for(var i =0; i<this.state.lat_long.length; i++){
+        //     var not_friend_lat = this.state.lat_long[i].lat; 
+        //     var not_friend_lon = this.state.lat_long[i].lng;
+        //     var user_lat = 41.76365; 
+        //     var user_lon = -88.14514;
+        //     var dist_meter = this.calculate_distance(user_lat,user_lon,not_friend_lat,not_friend_lon)
+        //     var dist_mile = dist_meter * 0.000621371
+        //     console.log(i,dist_mile)
+        //   }
+          //console.log(this.state.zipcodes) 
 
 
 
@@ -191,7 +188,7 @@ Friend_Recommender(user_id)
        return(
            <div>
                <div><Button onClick={this.Friend_Recommender}>Recommend</Button> </div>
-               {this.state.zipcodes}
+               
            </div>
        )
    }
