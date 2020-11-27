@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
-var friends1 =[];
-var all_users =[];
+
+var s = "0"
+var f = "0"
+var z = "";
 var not_friends = [];
-function add_entry(x){
-  friends1.push(x)
-}
-function add_entry_all(x){
-    all_users.push(x)
-  }
+
 
 
 class friends extends Component {
@@ -17,17 +14,21 @@ class friends extends Component {
    constructor(props){
        super(props);
        this.state={
-        not_friends: []
+        zipcodes:[]
     }
        this.Friend_Recommender = this.Friend_Recommender.bind(this);
+       this.add_zip_info = this.add_zip_info.bind(this);
    }
-
+   add_zip_info(zipCode){
+    const zip_arr = {zipCode}
+    this.setState(prevState => ({
+      zipcodes: [...prevState.zipcodes, zip_arr]
+    }))
+  
+  }
 //this function should return top 3 distances   
 Friend_Recommender(user_id)
-{
-    friends1 =[];
-    all_users =[];
-    var friends_list;
+{  
     var x = 0;
     //first step is to find the 3 closest people that are not friends
     Axios.post('http://localhost:3001/mongo/find',
@@ -36,8 +37,8 @@ Friend_Recommender(user_id)
         for(var i = 0; i < res.data.length; i++)
         { 
           var x = res.data[0].friend_list[i]
-          add_entry(x)
-          friends1.push(x)
+          f= f +" "
+          f= f + JSON.stringify(x);
         }
     
       })
@@ -48,38 +49,64 @@ Friend_Recommender(user_id)
           for(var i = 0; i < res.data.length; i++)
           { 
             var x = res.data[i].userID
-            add_entry_all(x)
+            s= s +" "
+            s= s + JSON.stringify(x);
+            
+          
           }
       
         })
-        console.log(JSON.stringify(all_users));
+       
+        var all_users = s.split(' ')
+        var friends1 = f.split(' ')
+        s = "0";
+        f=  "0"
+        console.log(all_users.length)
+        console.log(friends1.length)
 
- 
-  
-        console.log("here")
         for( var i = 0; i < friends1.length; i++)
         {
             for(var j =0; j < all_users.length; j++)
             {
-                console.log(friends1[i])
-                console.log(all_users[j])
                 if(friends1[i] == all_users[j])
                 {
-                    console.log("here")
+                   
                     all_users[j] = -1;
                 }
 
             }
         }
         console.log(all_users);
+
  
+         
+
+        for(var i = 0; i < all_users.length; i++)
+        {
+            if(all_users[i] != -1)
+            {
+        Axios.post('http://localhost:3001/find_zipcodes',
+        {userID:localStorage.getItem("user_id_global"), not_friends: all_users[i]}).then((res)=>{
+            console.log(res.data[0].zipCode)
+            // var xx = res.data[0].zipCode;
+            // z = z + " ";
+            // z = z + JSON.stringify(xx);
+
+          })
+        }
+        }
+        console.log(z)
+
+
+
+
 
 }
 
 
    render(){
         this.Friend_Recommender()
-  
+        
        return(
            <div>
                

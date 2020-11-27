@@ -222,6 +222,32 @@ app.post('/mongo/find', async (req, res) => {
     })
 })
 
+var s = "";
+app.post("/find_zipcodes", (req, res) => {
+    
+    const user_ID = req.body.userID
+   let not = req.body.not_friends
+   console.log(not)
+
+
+    const sqlSearch = "SELECT zipCode FROM user WHERE userID = ? "
+    con.query(sqlSearch, not, (err, result) => {
+        if (err) {
+            return;
+        } 
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+        }
+    })
+   
+})
+
+
+
+
 app.post('/mongo/add',async function (req, res) {
     const question = new userModel(req.body);
     try {
@@ -232,27 +258,6 @@ app.post('/mongo/add',async function (req, res) {
     }
 });
 
-function diff_arr (arr1, arr2) {
 
-    var temp = [], difference = [];
-
-    for (var i = 0; i < arr1.length; i++) {
-        temp[arr1[i]] = true;
-    }
-
-    for (var i = 0; i < arr2.length; i++) {
-        if (temp[arr2[i]]) {
-            delete temp[arr2[i]];
-        } else {
-            temp[arr2[i]] = true;
-        }
-    }
-
-    for (var j in temp) {
-        difference.push(j);
-    }
-
-    return difference;
-}
 
 app.listen(3001, () => { console.log("running on 3001"); });
