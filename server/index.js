@@ -190,21 +190,18 @@ app.post('/mongo/find', async (req, res) => {
 //try to find all users
     const sql = "Select * From user where userID <> ?"
     con.query(sql, u_id, (err, result) => {
-            if (result.length > 0) {
-                console.log(result)
-            }
+        if (result.length > 0) {
+            console.log(result)
+        }
+        var new_list = [];
+
+        for (const res of result) {
+            new_list.push(res.userID)
+        }
+        console.log("List of all users besides current: ", new_list);
+        console.log("Friends List: ", friends_list);
+        console.log("Differences in friends: ", diff_arr(new_list, friends_list));
     })
-
-
-
-
-
-
-
-
-
-
-
   });
   
 app.post('/mongo/add',async function (req, res) {
@@ -217,34 +214,27 @@ app.post('/mongo/add',async function (req, res) {
     }
 });
 
-app.post("/api/not_friends", (req, res) => {
-    const userID = req.body.userID
+function diff_arr (arr1, arr2) {
 
-    var temp = "";
-    temp += userID;
+    var temp = [], difference = [];
 
-    for (i = 0; i < friends_list.length; i++) {
-        temp += friends_list[i];
-        if (i != friends_list.length - 1) {
-            temp += ", ";
+    for (var i = 0; i < arr1.length; i++) {
+        temp[arr1[i]] = true;
+    }
+
+    for (var i = 0; i < arr2.length; i++) {
+        if (temp[arr2[i]]) {
+            delete temp[arr2[i]];
+        } else {
+            temp[arr2[i]] = true;
         }
     }
 
-    const friends = tempID
-    const sqlUpdate = "SELECT userID, zip* FROM Users WHERE userID NOT IN ('?')"
+    for (var j in temp) {
+        difference.push(j);
+    }
 
-    con.query(sqlUpdate, [friends], (err, result) => {
-        if (err) {
-            console.error('Database update for User failed: ' + err.stack);
-            return;
-        } else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-            else { res.send({ message: "you messed up" }) }
-        }
-    })
-})
+    return difference;
+}
 
 app.listen(3001, () => { console.log("running on 3001"); });
