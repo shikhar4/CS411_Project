@@ -246,6 +246,28 @@ app.post("/find_zipcodes", (req, res) => {
 })
 
 
+app.post("/find_coordinates", (req, res) => {
+    
+   let zipcode = req.body.zipcodes
+   //console.log(not)
+
+
+    const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
+    con.query(sqlSearch, zipcode, (err, result) => {
+        if (err) {
+            return;
+        } 
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+        }
+    })
+   
+})
+
+
 
 
 app.post('/mongo/add',async function (req, res) {
