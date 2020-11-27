@@ -227,7 +227,7 @@ app.post("/find_zipcodes", (req, res) => {
     
     const user_ID = req.body.userID
    let not = req.body.not_friends
-   console.log(not)
+   //console.log(not)
 
 
     const sqlSearch = "SELECT zipCode FROM user WHERE userID = ? "

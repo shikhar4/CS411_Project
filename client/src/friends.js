@@ -19,7 +19,7 @@ class friends extends Component {
        this.Friend_Recommender = this.Friend_Recommender.bind(this);
        this.add_zip_info = this.add_zip_info.bind(this);
    }
-   add_zip_info(zipCode){
+add_zip_info(zipCode){
     const zip_arr = {zipCode}
     this.setState(prevState => ({
       zipcodes: [...prevState.zipcodes, zip_arr]
@@ -30,6 +30,7 @@ class friends extends Component {
 Friend_Recommender(user_id)
 {  
     var x = 0;
+    console.log("before first for loop")
     //first step is to find the 3 closest people that are not friends
     Axios.post('http://localhost:3001/mongo/find',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
@@ -39,10 +40,12 @@ Friend_Recommender(user_id)
           var x = res.data[0].friend_list[i]
           f= f +" "
           f= f + JSON.stringify(x);
+          console.log(f)
         }
     
       })
 
+      console.log("before second for loop")
       Axios.post('http://localhost:3001/mongo/find_notfriends',
       {userID:localStorage.getItem("user_id_global"), f: friends1}).then((res)=>{
           
@@ -51,6 +54,7 @@ Friend_Recommender(user_id)
             var x = res.data[i].userID
             s= s +" "
             s= s + JSON.stringify(x);
+            console.log(s)
             
           
           }
@@ -61,8 +65,8 @@ Friend_Recommender(user_id)
         var friends1 = f.split(' ')
         s = "0";
         f=  "0"
-        console.log(all_users.length)
-        console.log(friends1.length)
+        //console.log(all_users.length)
+        //console.log(friends1.length)
 
         for( var i = 0; i < friends1.length; i++)
         {
@@ -76,26 +80,45 @@ Friend_Recommender(user_id)
 
             }
         }
-        console.log(all_users);
-
- 
-         
-
-        for(var i = 0; i < all_users.length; i++)
+        //console.log(all_users);
+        var garbage = all_users; 
+        var not_friends = []; 
+        //console.log(not_friends)
+        for(var i = 0; i < garbage.length; i++){
+          if(garbage[i] != -1){
+            not_friends.push(garbage[i])
+          }
+        }
+        console.log(not_friends)
+        
+        for(var i = 0; i < not_friends.length; i++)
         {
-            if(all_users[i] != -1)
-            {
-        Axios.post('http://localhost:3001/find_zipcodes',
-        {userID:localStorage.getItem("user_id_global"), not_friends: all_users[i]}).then((res)=>{
-            console.log(res.data[0].zipCode)
-            // var xx = res.data[0].zipCode;
-            // z = z + " ";
-            // z = z + JSON.stringify(xx);
+  
+               Axios.post('http://localhost:3001/find_zipcodes',
+                 {userID:localStorage.getItem("user_id_global"), not_friends: not_friends[i]}).then((res)=>{
+                      console.log(res.data)
+                       
+                      // var xx = res.data[0].zipCode;
+                      // z = z + " ";
+                      // z = z + JSON.stringify(xx);
+                      var zip_arr = res.data[0].zipCode; 
+                      console.log(zip_arr)
+                      this.setState(prevState => ({
+                        zipcodes: [...prevState.zipcodes, zip_arr]
+                      }))
+                      
 
-          })
-        }
-        }
-        console.log(z)
+                 })
+            
+            console.log(this.state.zipcodes) 
+          }
+          
+          
+          console.log(not_friends)
+         
+        //const {zipcode} = this.state.zipcodes[0]
+        
+        
 
 
 
@@ -105,11 +128,12 @@ Friend_Recommender(user_id)
 
 
    render(){
-        this.Friend_Recommender()
+        //this.Friend_Recommender()
         
        return(
            <div>
-               
+               <div><Button onClick={this.Friend_Recommender}>Recommend</Button> </div>
+               {this.state.zipcodes}
            </div>
        )
    }
