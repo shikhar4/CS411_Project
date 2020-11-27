@@ -132,7 +132,7 @@ app.post("/api/search_borrowed_items", (req, res) => {
 app.post("/api/search_product", (req,res) =>{
     const product = '%' + req.body.ProductName + '%'
     console.log(product) 
-    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ?"
+    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0"
     con.query(sqlSearchProduct, [product], (err,result) => {
         if(err){
             console.error("Database search for product failed: " + err.stack)
@@ -210,6 +210,8 @@ app.post("/api/borrow_product",(req,res) => {
             console.log(result)
         }
     })
+
+    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE product "
 })
 
 //mogno db connection
