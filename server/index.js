@@ -455,7 +455,7 @@ app.post("/types", (req, res) => {
 
 
 
-                 res.send(JSON.stringify(total))
+                 res.send(total.toString())
              
                 }
 
@@ -573,7 +573,7 @@ app.post("/types", (req, res) => {
 
 
 
-                 res.send(JSON.stringify(total))
+                 res.send(total.toString())
              
                 }
 

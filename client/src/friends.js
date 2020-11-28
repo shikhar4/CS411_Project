@@ -4,6 +4,8 @@ import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap"
 
 var s = "0"
 var f = "0"
+var type_string = "0"
+var brandname_string = "0"
 var z = "";
 var not_friends = [];
 
@@ -222,9 +224,8 @@ Friend_Recommender(user_id)
         //   {zipcode: localStorage.getItem("zipcode_global")}).then((res)=>{
         //     console.log(res)
         // })
-        
+        let closest_distances = []
         this.setState({distances: []})
-
         for(var i =1; i<this.state.lat_long.length; i++){
             var not_friend_lat = this.state.lat_long[i].lat_long.lat; 
             var not_friend_lon = this.state.lat_long[i].lat_long.lng;
@@ -281,7 +282,13 @@ Friend_Recommender(user_id)
           this.add_not_friends(not_friends[temp_min_index1])
           this.add_not_friends(not_friends[temp_min_index2])
           this.add_not_friends(not_friends[temp_min_index3])
-          console.log("THIS LINE", this.state.closest_distance_not_friends)        
+          
+
+          closest_distances.push(this.state.distances[temp_min_index1].distance)
+          closest_distances.push(this.state.distances[temp_min_index2].distance)
+          closest_distances.push(this.state.distances[temp_min_index3].distance)
+          console.log(closest_distances)
+           
         }
 
 
@@ -293,10 +300,12 @@ Friend_Recommender(user_id)
         {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
           (res) => {
             this.add_friends_types(res.data)
+            type_string = this.state.friends_types.type.split(',')
           }
         )
 
-        console.log(this.state.friends_types)
+        console.log(this.state.friends_types.type)
+        
 
         //api call /brandname
         //pass in userid and this.stat.closet_distance_friends
@@ -305,38 +314,93 @@ Friend_Recommender(user_id)
         {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
           (res) => {
             this.add_friends_brandnames(res.data)
+            console.log(res.data) 
+            brandname_string = this.state.friends_brandnames.brandname.split(',')
+            //console.log(brandname_string[0])
+            
           }
         )
-        console.log(this.state.friends_brandnames)
-
-        var min = 99999;
-        var max = 0;
-
-        for (var i = 0; i < 3; i++) {
-          if (this.state.closest_distance_not_friends[i] < min) {
-            min = this.state.closest_distance_not_friends[i]
-          }
-
-          if (this.state.closest_distance_not_friends[i] > max) {
-            max = this.state.closest_distance_not_friends[i]
-          }
-        }
-
-        var tempArray = []
         
-        for (var i = 0; i < 3; i++) {
-          console.log(min, max, this.state.closest_distance_not_friends)
-          tempArray.push((this.state.closest_distance_not_friends[i] - min) / (max - min))
+        console.log(brandname_string)
+       
+        //sum everything up
+        //divide each # by sum 
+        //multiply by -1
+
+        // var min = 99999;
+        // var max = 0;
+        // if(this.state.distances.length > 7){
+        //   for (var i = 0; i < this.state.distances.length; i++) {
+        //     if (this.state.distances[i].distance < min) {
+        //       min = this.state.distances[i].distance
+        //     }
+  
+        //     if (this.state.distances[i].distance> max) {
+        //       max = this.state.distances[i].distance
+        //     }
+        //   }
+        // }
+        var total = 0;
+        for(var i = 0; i<closest_distances.length; i++){
+          total += closest_distances[i]
+        }
+        // for(var i = 0; i<closest_distances.length;i++){
+        //   closest_distances[i] = -1 * (closest_distances[i] / total)
+        // }
+        // console.log(closest_distances)
+
+        // var total_type_sum = 0
+        // if(this.state.friends_types.length > 0){
+        //   for(var i = 0; i<this.state.friends_types.length;i++){
+        //     total_brand_sum += this.state.friends_types[i]
+        //   }
+        // }
+        // var total_brand_sum = 0
+        // if(this.state.friends_brandnames.length > 0){
+        //   for(var i = 0; i<this.state.friends_brandnames;i++){
+        //     total += this.state.friends_brandnames[i]
+        //   }
+        // }
+        var finalResults = []
+        for(var i = 0; i<closest_distances.length; i++){
+          finalResults.push((5000-closest_distances[i]) + (brandname_string[i]*100) + (type_string[i]*50) )
+        }
+        console.log(finalResults)
+
+        var friend_max = -1
+        var friend_index = 0; 
+        for(var i = 0; i < finalResults.length; i++){
+          var ooga_booga = finalResults[i]
+          if(ooga_booga > friend_max){
+            friend_max = ooga_booga
+            friend_index = i 
+          }
+        }
+        console.log(friend_index)
+        
+        var recommended_user_id = -1
+        if(friend_index == 0){
+          recommended_user_id = not_friends[temp_min_index1]
+        }
+        if(friend_index == 1){
+          recommended_user_id = not_friends[temp_min_index2]
+        }
+        if(friend_index == 2){
+          recommended_user_id = not_friends[temp_min_index2]
         }
 
-        this.setState({closest_distance_not_friends: tempArray})
 
-        console.log(this.state.closest_distance_not_friends)
+        //get relevant information w/ sql query given the recommended user id
+        //can discuss how we will display these recommendations
 
-        //find way to inverse distances
-        //index into array from types api + index into array from brandname api + inverse distance 
-       
-
+        // Axios.post('http://localhost:3001/get_friend_recommendation',
+        // {friendID: recommended_user_id}).then(
+        //   (res) => {
+            
+            
+        //   }
+        // )
+  
 }
 
 
