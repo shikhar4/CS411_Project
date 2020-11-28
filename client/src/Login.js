@@ -22,7 +22,6 @@ class Login extends Component {
    this.handleChange_userid = this.handleChange_userid.bind(this); 
    this.handleChange_password = this.handleChange_password.bind(this);
    this.login = this.login.bind(this);
-   this.get_User_Lat_Long = this.get_User_Lat_Long.bind(this)
 };
 
 login() {
