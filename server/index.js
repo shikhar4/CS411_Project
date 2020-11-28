@@ -349,7 +349,7 @@ app.post('/mongo/add',async function (req, res) {
 
 
 
-app.get("/types", (req, res) => {
+app.post("/types", (req, res) => {
     
     let user_id = 15 //req.body.userID
     let notfriends = [20,16,17]//req.body.not_friends
@@ -467,7 +467,7 @@ app.get("/types", (req, res) => {
 
 
 
- app.get("/brandname", (req, res) => {
+ app.post("/brandname", (req, res) => {
     
     let user_id = 15 //req.body.userID
     let notfriends = [20,16,17]//req.body.not_friends
