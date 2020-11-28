@@ -199,6 +199,8 @@ app.post("/api/insert_product", (req, res) => {
 
 var mongoose = require('mongoose');
 const userModel = require('./user');
+const user = require('./user')
+const json = require('body-parser/lib/types/json')
 
 var uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/BorrowMe?retryWrites=true&w=majority";
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
@@ -342,6 +344,243 @@ app.post('/mongo/add',async function (req, res) {
         res.status(404).send({message: "Error", data: err})
     }
 });
+
+
+
+
+
+app.get("/types", (req, res) => {
+    
+    let user_id = 15 //req.body.userID
+    let notfriends = [20,16,17]//req.body.not_friends
+
+    let person1 = notfriends[0];
+    let person2 = notfriends[1];
+    let person3 = notfriends[2];
+    //console.log(not)
+    
+    let user_list = [];
+    let person1_list = [];
+    let person2_list = [];
+    let person3_list = [];
+
+    let count_user =0;
+    let c1 = 0;
+    let c2 =0;
+    let c3 = 0;
+ 
+     const sqlSearch = "SELECT userID,type, Count(type) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by type, userID"
+
+     con.query(sqlSearch, [user_id,person1,person2,person3], (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+              
+                 for (var i = 0; i <result.length; i++)
+                 {
+                     if(result[i].userID == user_id)
+                     {
+                        user_list.push({type:result[i].type,num:result[i].num})
+                        count_user = count_user +1
+                     }
+                     if(result[i].userID == person1)
+                     {
+                         console.log(result[i].userID)
+                        person1_list.push({type:result[i].type,num:result[i].num})
+                        c1 = c1+ 1;
+                     }
+                     else if(result[i].userID == person2)
+                     {
+                        person2_list.push({type:result[i].type,num:result[i].num})
+                        c2 = c2+ 1;
+                     }
+                     else if(result[i].userID == person3)
+                     {
+                        person3_list.push({type:result[i].type,num:result[i].num})
+                        c3 = c3+ 1;
+                     }
+                 }
+              
+                 JSON.stringify(user_list);
+                 JSON.stringify(person1_list);
+                 JSON.stringify(person2_list);
+                 JSON.stringify(person3_list);
+                 console.log(person1_list)
+                 let total = [];
+                 let t1 = 0; 
+                 let t2 = 0;
+                 let t3 = 0; 
+                for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c1; j++)
+                        {
+                            if(user_list[i].type == person1_list[j].type )
+                            {
+                                t1 = t1+ person1_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t1)
+                
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c2; j++)
+                        {
+                            if(user_list[i].type == person2_list[j].type )
+                            {
+                                t2 = t2+ person2_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t2)
+
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c3; j++)
+                        {
+                            if(user_list[i].type == person3_list[j].type )
+                            {
+                                t3 = t3+ person3_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t3)
+
+
+
+
+                 res.send(JSON.stringify(total))
+             
+                }
+
+         }
+     })
+    
+ })
+
+
+
+
+ app.get("/brandname", (req, res) => {
+    
+    let user_id = 15 //req.body.userID
+    let notfriends = [20,16,17]//req.body.not_friends
+
+    let person1 = notfriends[0];
+    let person2 = notfriends[1];
+    let person3 = notfriends[2];
+    //console.log(not)
+    
+    let user_list = [];
+    let person1_list = [];
+    let person2_list = [];
+    let person3_list = [];
+
+    let count_user =0;
+    let c1 = 0;
+    let c2 =0;
+    let c3 = 0;
+ 
+     const sqlSearch = "SELECT userID, brandName as type, Count(brandName) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by brandName, userID"
+
+     con.query(sqlSearch, [user_id,person1,person2,person3], (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+              
+                 for (var i = 0; i <result.length; i++)
+                 {
+                     if(result[i].userID == user_id)
+                     {
+                        user_list.push({type:result[i].type,num:result[i].num})
+                        count_user = count_user +1
+                     }
+                     if(result[i].userID == person1)
+                     {
+                         console.log(result[i].userID)
+                        person1_list.push({type:result[i].type,num:result[i].num})
+                        c1 = c1+ 1;
+                     }
+                     else if(result[i].userID == person2)
+                     {
+                        person2_list.push({type:result[i].type,num:result[i].num})
+                        c2 = c2+ 1;
+                     }
+                     else if(result[i].userID == person3)
+                     {
+                        person3_list.push({type:result[i].type,num:result[i].num})
+                        c3 = c3+ 1;
+                     }
+                 }
+              
+                 JSON.stringify(user_list);
+                 JSON.stringify(person1_list);
+                 JSON.stringify(person2_list);
+                 JSON.stringify(person3_list);
+                 console.log(person1_list)
+                 let total = [];
+                 let t1 = 0; 
+                 let t2 = 0;
+                 let t3 = 0; 
+                for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c1; j++)
+                        {
+                            if(user_list[i].type == person1_list[j].type )
+                            {
+                                t1 = t1+ person1_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t1)
+                
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c2; j++)
+                        {
+                            if(user_list[i].type == person2_list[j].type )
+                            {
+                                t2 = t2+ person2_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t2)
+
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c3; j++)
+                        {
+                            if(user_list[i].type == person3_list[j].type )
+                            {
+                                t3 = t3+ person3_list[j].num;
+                            }
+                        }
+                 }
+                 total.push(t3)
+
+
+
+
+                 res.send(JSON.stringify(total))
+             
+                }
+
+         }
+     })
+    
+ })
 
 
 

@@ -279,6 +279,21 @@ Friend_Recommender(user_id)
         
         }
 
+
+
+        //api call /types
+        //pass in userid and this.stat.closet_distance_friends
+        //return array which store it 
+
+
+        //api call /brandname
+        //pass in userid and this.stat.closet_distance_friends
+        //return array which store it 
+
+        //find way to inverse distances
+        //index into array from types api + index into array from brandname api + inverse distance 
+
+
 }
 
 
