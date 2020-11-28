@@ -17,7 +17,9 @@ class friends extends Component {
         zipcodes:[],
         lat_long:[],
         distances:[],
-        closest_distance_not_friends:[]
+        closest_distance_not_friends:[],
+        friends_types:[],
+        friends_brandnames: []
         
     }
        this.Friend_Recommender = this.Friend_Recommender.bind(this);
@@ -25,11 +27,23 @@ class friends extends Component {
        this.add_lat_long_info = this.add_lat_long_info.bind(this); 
        this.add_dist_info = this.add_dist_info.bind(this);
        this.calculate_distance=this.calculate_distance.bind(this);
+       this.add_friends_types = this.add_friends_types.bind(this);
+       this.add_friends_brandnames = this.add_friends_brandnames.bind(this);
        
        
    }
 componentDidMount(){
   this.Friend_Recommender(); 
+}
+
+add_friends_types(type){
+  const type_arr = {type}
+  this.setState({friends_types: type_arr})
+}
+
+add_friends_brandnames(brandname) {
+  const brandname_arr = {brandname}
+  this.setState({friends_brandnames: brandname_arr})
 }
 
 add_zip_info(zipCode){
@@ -267,16 +281,7 @@ Friend_Recommender(user_id)
           this.add_not_friends(not_friends[temp_min_index1])
           this.add_not_friends(not_friends[temp_min_index2])
           this.add_not_friends(not_friends[temp_min_index3])
-          console.log(this.state.closest_distance_not_friends)
-
-          
-
-          
-
-
-
-
-        
+          console.log("THIS LINE", this.state.closest_distance_not_friends)        
         }
 
 
@@ -284,15 +289,53 @@ Friend_Recommender(user_id)
         //api call /types
         //pass in userid and this.stat.closet_distance_friends
         //return array which store it 
+        Axios.post('http://localhost:3001/types',
+        {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
+          (res) => {
+            this.add_friends_types(res.data)
+          }
+        )
 
+        console.log(this.state.friends_types)
 
         //api call /brandname
         //pass in userid and this.stat.closet_distance_friends
         //return array which store it 
+        Axios.post('http://localhost:3001/brandname',
+        {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
+          (res) => {
+            this.add_friends_brandnames(res.data)
+          }
+        )
+        console.log(this.state.friends_brandnames)
+
+        var min = 99999;
+        var max = 0;
+
+        for (var i = 0; i < 3; i++) {
+          if (this.state.closest_distance_not_friends[i] < min) {
+            min = this.state.closest_distance_not_friends[i]
+          }
+
+          if (this.state.closest_distance_not_friends[i] > max) {
+            max = this.state.closest_distance_not_friends[i]
+          }
+        }
+
+        var tempArray = []
+        
+        for (var i = 0; i < 3; i++) {
+          console.log(min, max, this.state.closest_distance_not_friends)
+          tempArray.push((this.state.closest_distance_not_friends[i] - min) / (max - min))
+        }
+
+        this.setState({closest_distance_not_friends: tempArray})
+
+        console.log(this.state.closest_distance_not_friends)
 
         //find way to inverse distances
         //index into array from types api + index into array from brandname api + inverse distance 
-
+       
 
 }
 
