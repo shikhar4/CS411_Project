@@ -45,7 +45,7 @@ class my_account extends Component {
 
     return (
       <>
-        <h3>Registration Information</h3>
+        <h3>Account Information</h3>
 
         <div>
 

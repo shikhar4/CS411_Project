@@ -87,7 +87,7 @@ app.post("/api/login", (req, res) => {
             }
             else {
 
-                res.send({ message: "Wrong UserName/Password" });
+                res.send({ message: "Wrong Username/Password" });
             }
 
         }
@@ -108,6 +108,43 @@ app.post("/api/search", (req, res) => {
                 res.send(result)
             }
             else { res.send({ message: "empty products" }) }
+        }
+    })
+})
+
+app.post("/api/search_borrowed_items", (req, res) => {
+    const user_ID = req.body.userID
+
+    const sqlSearch = "SELECT DISTINCT * FROM borrowinfo WHERE borrowerID = ?"
+    con.query(sqlSearch, [user_ID], (err, result) => {
+        if (err) {
+            console.error('Database search for borrowinfo failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "empty borrow" }) }
+        }
+    })
+})
+
+app.post("/api/search_product", (req,res) =>{
+    const product = '%' + req.body.ProductName + '%'
+    console.log(product) 
+    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0"
+    con.query(sqlSearchProduct, [product], (err,result) => {
+        if(err){
+            console.error("Database search for product failed: " + err.stack)
+            return; 
+        }
+        else{
+            if(result.length > 0){
+                console.log(result)
+                //alert("Product Found")
+                res.send(result)
+            }
         }
     })
 })
@@ -156,6 +193,7 @@ app.post("/api/insert_product", (req, res) => {
         }
     })
 })
+
 
 // mongodb connection
 
@@ -245,11 +283,36 @@ app.post("/find_zipcodes", (req, res) => {
    
 })
 
+app.post("/api/borrow_product",(req,res) => {
+    const productID = req.body.ProductID
+    const borrowerID = req.body.BorrowerID
+    const ownerID = req.body.OwnerID
+    const DueDate = req.body.dueDate 
+    const BorrowDate = req.body.borrowDate
+
+    const sqlInsert = "INSERT INTO borrowinfo (productID, borrowerID, ownerID, DueDate, BorrowDate) VALUES (?,?,?,?,?);"
+    con.query(sqlInsert, [productID, borrowerID, ownerID, DueDate, BorrowDate], (err, result) => {
+        if (err) {
+            console.error('Database insert into borrowinfo failed: ' + err.stack);
+            return;
+        }
+        else {
+            console.log(result)
+        }
+    })
+
+    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE product "
+})
+
+//mogno db connection
+
+
 
 app.post("/find_coordinates", (req, res) => {
     
    let zipcode = req.body.zipcodes
    //console.log(not)
+
 
 
     const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
@@ -263,6 +326,21 @@ app.post("/find_coordinates", (req, res) => {
                 res.send(result)
             }
         }
+
+const { MongoClient } = require("mongodb");
+// Replace the uri string with your MongoDB deployment's connection string.
+const uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const client = new MongoClient(uri);
+async function run() {
+  try {
+    await client.connect();
+    const database = client.db('BorrowMe');
+    const collection = database.collection('User');
+    // Query for a movie that has the title 'Back to the Future'
+    const movie = await collection.find().toArray(function(err, result) {
+        if (err) throw err;
+          //console.log(result);
+
     })
    
 })
