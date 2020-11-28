@@ -310,40 +310,25 @@ app.post("/api/borrow_product",(req,res) => {
 
 app.post("/find_coordinates", (req, res) => {
     
-   let zipcode = req.body.zipcodes
-   //console.log(not)
+    let zipcode = req.body.zipcodes
+    //console.log(not)
+ 
+ 
+     const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
+     con.query(sqlSearch, zipcode, (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+                 res.send(result)
+             }
+         }
+     })
+    
+ })
 
-
-
-    const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
-    con.query(sqlSearch, zipcode, (err, result) => {
-        if (err) {
-            return;
-        } 
-        else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-        }
-
-const { MongoClient } = require("mongodb");
-// Replace the uri string with your MongoDB deployment's connection string.
-const uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/<dbname>?retryWrites=true&w=majority";
-const client = new MongoClient(uri);
-async function run() {
-  try {
-    await client.connect();
-    const database = client.db('BorrowMe');
-    const collection = database.collection('User');
-    // Query for a movie that has the title 'Back to the Future'
-    const movie = await collection.find().toArray(function(err, result) {
-        if (err) throw err;
-          //console.log(result);
-
-    })
-   
-})
 
 
 
