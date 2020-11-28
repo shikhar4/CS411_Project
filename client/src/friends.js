@@ -15,12 +15,23 @@ class friends extends Component {
        super(props);
        this.state={
         zipcodes:[],
-        lat_long:[]
+        lat_long:[],
+        distances:[],
+        closest_distance_not_friends:[]
+        
     }
        this.Friend_Recommender = this.Friend_Recommender.bind(this);
        this.add_zip_info = this.add_zip_info.bind(this);
+       this.add_lat_long_info = this.add_lat_long_info.bind(this); 
+       this.add_dist_info = this.add_dist_info.bind(this);
        this.calculate_distance=this.calculate_distance.bind(this);
+       
+       
    }
+componentDidMount(){
+  this.Friend_Recommender(); 
+}
+
 add_zip_info(zipCode){
     const zip_arr = {zipCode}
     this.setState(prevState => ({
@@ -34,6 +45,22 @@ add_lat_long_info(lat_long){
     lat_long: [...prevState.lat_long, lat_long_arr]
   }))
 }
+add_dist_info(distance){
+  const distance_num = {distance}
+  this.setState(prevState => ({
+    distances: [...prevState.distances, distance_num]
+  }))
+}
+
+add_not_friends(friend){
+  const friend_index= {friend}
+  this.setState(prevState => ({
+    closest_distance_not_friends: [...prevState.closest_distance_not_friends, friend_index]
+  }))
+
+}
+
+
 
 calculate_distance(lat1,lon1,lat2,lon2){
   const R = 6371e3; // metres
@@ -50,6 +77,14 @@ calculate_distance(lat1,lon1,lat2,lon2){
   const d = R * c; // in metres
   return d
 }
+
+// getUserLatLong(){
+//   Axios.post('http://localhost:3001/find_coordinates',
+//   {userID:localStorage.getItem("zipcode_global")}).then((res)=>{
+
+//   })
+// }
+
 //this function should return top 3 distances   
 Friend_Recommender(user_id)
 {  
@@ -59,7 +94,7 @@ Friend_Recommender(user_id)
     Axios.post('http://localhost:3001/mongo/find',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
        // console.log(res.data[0].friend_list)
-        console.log(res.data)
+        //console.log(res.data)
         for(var i = 0; i < res.data.length; i++)
         { 
           var x = res.data[0].friend_list[i]
@@ -69,7 +104,7 @@ Friend_Recommender(user_id)
         }
     
       })
-      console.log(f)
+      //console.log(f)
       //console.log("before second for loop")
       Axios.post('http://localhost:3001/mongo/find_notfriends',
       {userID:localStorage.getItem("user_id_global"), f: friends1}).then((res)=>{
@@ -127,57 +162,122 @@ Friend_Recommender(user_id)
             
             //console.log(this.state.zipcodes) 
         }
-        Promise.all(promsArr).then(resp=>{console.log("data",resp);}).catch(err => {console.log(err)})
+        Promise.all(promsArr).then(resp=>{
+          for(var i = 0; i < resp.length; i++){
+            this.add_zip_info(resp[i].data[0].zipCode)
+          }
+          
+        }).catch(err => {console.log(err)})
+        var user_zip = localStorage.getItem("zipcode_global");
+        
+        
 
-        var new_zipcodes = this.state.zipcodes
-          //this.setState({zipcodes:[]})
-          // var user_zip = localStorage.getItem("zipcode_global");
-          // console.log(user_zip)
-          // this.setState(prevState => ({
-          //   zipcodes: [...prevState.zipcodes, user_zip]
-          // }))
-          //console.log(not_friends)
+        if(this.state.zipcodes.length > 0){
+          
+          this.add_zip_info(user_zip)
+        }
+        
+        //var new_zipcodes = this.state.zipcodes
+       
+        //console.log(user_zip)
+        
+        //console.log(not_friends)
          
         //const {zipcode} = this.state.zipcodes[0]
-        // this.setState({lat_long:[]})
-        // for(var i = 0; i < new_zipcodes.length; i++)
-        // {
+        
+        let promLatLongArr = []
+        for(var i = 0; i < this.state.zipcodes.length; i++)
+        {
   
-        //        Axios.post('http://localhost:3001/find_coordinates',
-        //          { zipcodes: new_zipcodes[i]}).then((res)=>{
-        //              // console.log(res.data)
-                       
-        //               // var xx = res.data[0].zipCode;
-        //               // z = z + " ";
-        //               // z = z + JSON.stringify(xx);
-        //               // var zip_arr = res.data[0].zipCode; 
-        //               // console.log(zip_arr)
-        //               // this.setState(prevState => ({
-        //               //   zipcodes: [...prevState.zipcodes, zip_arr]
-        //               // }))
-        //               var lat_long_arr = res.data[0]
-        //               this.add_lat_long_info(lat_long_arr)
-        //               //console.log(this.state.lat_long)
+               promLatLongArr.push(Axios.post('http://localhost:3001/find_coordinates',
+                 { zipcodes: this.state.zipcodes[i].zipCode}))
+            
+            
+        }
+        this.setState({lat_long: []})
+        Promise.all(promLatLongArr).then(resp=>{
+          for(var i = 0; i < resp.length; i++){
+            this.add_lat_long_info(resp[i].data[0])
+          }
+        }).catch(err => {console.log(err)})
+        if(this.state.lat_long.length > 0){
+          console.log(this.state.lat_long[0].lat_long.lat)
+        }
+        
+        // Axios.post('http://localhost:3001/find_coordinates',
+        //   {zipcode: localStorage.getItem("zipcode_global")}).then((res)=>{
+        //     console.log(res)
+        // })
+        
+        this.setState({distances: []})
 
-        //          })
+        for(var i =1; i<this.state.lat_long.length; i++){
+            var not_friend_lat = this.state.lat_long[i].lat_long.lat; 
+            var not_friend_lon = this.state.lat_long[i].lat_long.lng;
+            var user_lat = this.state.lat_long[0].lat_long.lat; 
+            var user_lon = this.state.lat_long[0].lat_long.lng; 
+            var dist_meter = this.calculate_distance(user_lat,user_lon,not_friend_lat,not_friend_lon)
+            var dist_mile = dist_meter * 0.000621371
+            this.add_dist_info(dist_mile)
             
-            
-        //   }
-          
-          
-        //   for(var i =0; i<this.state.lat_long.length; i++){
-        //     var not_friend_lat = this.state.lat_long[i].lat; 
-        //     var not_friend_lon = this.state.lat_long[i].lng;
-        //     var user_lat = 41.76365; 
-        //     var user_lon = -88.14514;
-        //     var dist_meter = this.calculate_distance(user_lat,user_lon,not_friend_lat,not_friend_lon)
-        //     var dist_mile = dist_meter * 0.000621371
-        //     console.log(i,dist_mile)
-        //   }
+         }
+          if(this.state.distances.length > 0){
+            console.log(this.state.zipcodes)
+            console.log(this.state.distances)
+            console.log(not_friends)
+            //console.log(this.state.distances[0])
+          }
           //console.log(this.state.zipcodes) 
+        if(this.state.distances.length > 7){
+          var temp_min = this.state.distances[0].distance
+          var temp_min_index1 = -1; 
+          for(var i = 0; i < this.state.distances.length; i++){
+            var temp = this.state.distances[i].distance
+            if(temp <= temp_min){
+              temp_min = temp;
+              temp_min_index1 = i; 
+            }
+          }
+
+          temp_min = this.state.distances[0].distance
+          var temp_min_index2 = -1; 
+          for(var i = 0; i < this.state.distances.length; i++){
+            var dummy = this.state.distances[i].distance
+            if((dummy <= temp_min) && (i!=temp_min_index1)){
+              temp_min = dummy;
+              temp_min_index2 = i; 
+            }
+          }
+
+          temp_min = this.state.distances[0].distance
+          var temp_min_index3 = -1; 
+          for(var i = 0; i < this.state.distances.length; i++){
+            var dummy2 = this.state.distances[i].distance
+            if((dummy2 <= temp_min) && (i!=temp_min_index1) && (i!=temp_min_index2)){
+              temp_min = dummy2;
+              temp_min_index3 = i; 
+            }
+          }
+
+          console.log("min1",temp_min_index1)
+          console.log("min2",temp_min_index2)
+          console.log("min3", temp_min_index3)
+          
+          this.setState({closest_distance_not_friends: []})
+          this.add_not_friends(not_friends[temp_min_index1])
+          this.add_not_friends(not_friends[temp_min_index2])
+          this.add_not_friends(not_friends[temp_min_index3])
+          console.log(this.state.closest_distance_not_friends)
+
+          
+
+          
 
 
 
+
+        
+        }
 
 }
 
@@ -188,6 +288,7 @@ Friend_Recommender(user_id)
        return(
            <div>
                <div><Button onClick={this.Friend_Recommender}>Recommend</Button> </div>
+               
                
            </div>
        )

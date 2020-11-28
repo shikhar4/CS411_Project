@@ -22,7 +22,9 @@ class Login extends Component {
    this.handleChange_userid = this.handleChange_userid.bind(this); 
    this.handleChange_password = this.handleChange_password.bind(this);
    this.login = this.login.bind(this);
+   this.get_User_Lat_Long = this.get_User_Lat_Long.bind(this)
 };
+
 login() {
   Axios.post('http://localhost:3001/api/login',
   {username:this.state.userId,password:this.state.password}).then((res)=>{
@@ -49,9 +51,14 @@ login() {
       localStorage.setItem("password_global", res.data[0].Password);
     }
     
+    
 
   })
+
+   
 }
+
+
 
   render() {
       const messages = this.state.message;
@@ -73,7 +80,6 @@ login() {
       }
     return (
       <>
-
 
       <h1 className = "BorrowMe_Title"></h1>
       <div className="Login_Page">
