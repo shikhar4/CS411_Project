@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const app2 = express()
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -25,7 +24,6 @@ app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
-
 
 app.get("/", (req, res) => {
 
@@ -74,6 +72,7 @@ app.post("/api/login", (req, res) => {
     const username = req.body.username
     const password = req.body.password
     const sql = "Select * From user Where UserName = ? AND Password = ?;"
+    console.log('here')
     con.query(sql, [username, password], (err, result) => {
         if (err) {
             console.error('Database search failed: ' + err.stack);
@@ -194,95 +193,6 @@ app.post("/api/insert_product", (req, res) => {
     })
 })
 
-
-// mongodb connection
-
-var mongoose = require('mongoose');
-const userModel = require('./user');
-
-var uri = "mongodb+srv://admin:admin@borrowme.q3qtp.mongodb.net/BorrowMe?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log("MongoDB database connection established successfully");
-});
-
-var apple;
-
-app.post('/mongo/find', async (req, res) => {
-    var friends_list;
-    let u_id = req.body.userID
-    console.log(u_id)
-    let query = {user_id: u_id}
-    let foods = await userModel.find(query);
-    try { 
-      console.log(foods)
-      res.send(foods);
-      friends_list = foods[0].friend_list
-    } catch (err) {
-      res.status(500).send(err);
-    }
-    
-// var not_friends = [];
-// var new_list = [];
-// var zip = [];
-// //try to find all users
-//     const sql = "Select userID, zipCode From user where userID <> ?"
-//      con.query(sql, u_id, (err, result) => {
-//         if (result.length > 0) {
-//             for (const res of result) {
-//                 new_list.push(res.userID)
-//                 zip.push(res.zipCode)
-//             }
-//             res.send(result)
-//         }
-       
-//     })
-//     console.log(zip)
- 
-  });
-  
-  app.post("/mongo/find_notfriends", (req, res) => {
-    const user_ID = req.body.userID
-   
-    const sqlSearch = "SELECT userID FROM user WHERE userID <> ?"
-    con.query(sqlSearch, [user_ID], (err, result) => {
-        if (err) {
-            console.error('Database search for myProducts failed: ' + err.stack);
-            return;
-        } else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-            else { res.send({ message: "empty products" }) }
-        }
-    })
-})
-
-var s = "";
-app.post("/find_zipcodes", (req, res) => {
-    
-    const user_ID = req.body.userID
-   let not = req.body.not_friends
-   //console.log(not)
-
-
-    const sqlSearch = "SELECT zipCode FROM user WHERE userID = ? "
-    con.query(sqlSearch, not, (err, result) => {
-        if (err) {
-            return;
-        } 
-        else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-        }
-    })
-   
-})
-
 app.post("/api/borrow_product",(req,res) => {
     const productID = req.body.ProductID
     const borrowerID = req.body.BorrowerID
@@ -308,24 +218,6 @@ app.post("/api/borrow_product",(req,res) => {
 
 
 
-app.post("/find_coordinates", (req, res) => {
-    
-   let zipcode = req.body.zipcodes
-   //console.log(not)
-
-
-
-    const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
-    con.query(sqlSearch, zipcode, (err, result) => {
-        if (err) {
-            return;
-        } 
-        else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-        }
 
 const { MongoClient } = require("mongodb");
 // Replace the uri string with your MongoDB deployment's connection string.
@@ -340,24 +232,13 @@ async function run() {
     const movie = await collection.find().toArray(function(err, result) {
         if (err) throw err;
           //console.log(result);
-
     })
-   
-})
-
-
-
-
-app.post('/mongo/add',async function (req, res) {
-    const question = new userModel(req.body);
-    try {
-        await question.save();
-        res.status(201).send({message: "OK", data: question});
-    } catch (err) {
-        res.status(404).send({message: "Error", data: err})
-    }
-});
-
-
+    console.log(movie);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 app.listen(3001, () => { console.log("running on 3001"); });
