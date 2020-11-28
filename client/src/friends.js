@@ -392,6 +392,7 @@ Friend_Recommender(user_id)
 
         //get relevant information w/ sql query given the recommended user id
         //can discuss how we will display these recommendations
+        //cccc
 
         // Axios.post('http://localhost:3001/get_friend_recommendation',
         // {friendID: recommended_user_id}).then(
@@ -400,6 +401,7 @@ Friend_Recommender(user_id)
             
         //   }
         // )
+
   
 }
 
