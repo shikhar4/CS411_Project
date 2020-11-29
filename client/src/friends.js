@@ -9,8 +9,13 @@ var brandname_string = "0"
 var z = "";
 var not_friends = [];
 
+const columnHeader =["Username","FirstName","LastName"];
+var product_table =[];
+product_table.push({UserName:0,FirstName:0,LastName:0})
 
-
+function add_entry(UserName,FirstName,LastName){
+  product_table.push({UserName,FirstName,LastName})
+}
 class friends extends Component {
 
    constructor(props){
@@ -104,6 +109,7 @@ calculate_distance(lat1,lon1,lat2,lon2){
 //this function should return top 3 distances   
 Friend_Recommender(user_id)
 {  
+
     var x = 0;
     //console.log("before first for loop")
     //first step is to find the 3 closest people that are not friends
@@ -225,6 +231,7 @@ Friend_Recommender(user_id)
         //     console.log(res)
         // })
         let closest_distances = []
+        var not_3_not_friends_array = [0,0,0];
         this.setState({distances: []})
         for(var i =1; i<this.state.lat_long.length; i++){
             var not_friend_lat = this.state.lat_long[i].lat_long.lat; 
@@ -274,137 +281,158 @@ Friend_Recommender(user_id)
             }
           }
 
-          console.log("min1",temp_min_index1)
-          console.log("min2",temp_min_index2)
-          console.log("min3", temp_min_index3)
+          //console.log("min1",temp_min_index1)
+          //console.log("min2",temp_min_index2)
+          //console.log("min3", temp_min_index3)
           
           this.setState({closest_distance_not_friends: []})
           this.add_not_friends(not_friends[temp_min_index1])
           this.add_not_friends(not_friends[temp_min_index2])
           this.add_not_friends(not_friends[temp_min_index3])
           
+           not_3_not_friends_array[0] = not_friends[temp_min_index1]
+           not_3_not_friends_array[1] = not_friends[temp_min_index2]
+           not_3_not_friends_array[2] = not_friends[temp_min_index3]
+           
+      
 
           closest_distances.push(this.state.distances[temp_min_index1].distance)
           closest_distances.push(this.state.distances[temp_min_index2].distance)
           closest_distances.push(this.state.distances[temp_min_index3].distance)
-          console.log(closest_distances)
+         // console.log(closest_distances)
            
         }
 
+        
 
 
         //api call /types
         //pass in userid and this.stat.closet_distance_friends
         //return array which store it 
         Axios.post('http://localhost:3001/types',
-        {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
+        {userID: localStorage.getItem("user_id_global"), not_friends: not_3_not_friends_array}).then(
           (res) => {
             this.add_friends_types(res.data)
             type_string = this.state.friends_types.type.split(',')
           }
         )
 
-        console.log(this.state.friends_types.type)
+       
         
 
         //api call /brandname
         //pass in userid and this.stat.closet_distance_friends
         //return array which store it 
         Axios.post('http://localhost:3001/brandname',
-        {userID: localStorage.getItem("user_id_global"), notfriends: this.state.closest_distance_not_friends}).then(
+        {userID: localStorage.getItem("user_id_global"), not_friends: not_3_not_friends_array}).then(
           (res) => {
             this.add_friends_brandnames(res.data)
-            console.log(res.data) 
+            
             brandname_string = this.state.friends_brandnames.brandname.split(',')
             //console.log(brandname_string[0])
             
           }
         )
         
-        console.log(brandname_string)
-       
-        //sum everything up
-        //divide each # by sum 
-        //multiply by -1
 
-        // var min = 99999;
-        // var max = 0;
-        // if(this.state.distances.length > 7){
-        //   for (var i = 0; i < this.state.distances.length; i++) {
-        //     if (this.state.distances[i].distance < min) {
-        //       min = this.state.distances[i].distance
-        //     }
-  
-        //     if (this.state.distances[i].distance> max) {
-        //       max = this.state.distances[i].distance
-        //     }
-        //   }
-        // }
+       
+
         var total = 0;
         for(var i = 0; i<closest_distances.length; i++){
           total += closest_distances[i]
         }
-        // for(var i = 0; i<closest_distances.length;i++){
-        //   closest_distances[i] = -1 * (closest_distances[i] / total)
-        // }
-        // console.log(closest_distances)
 
-        // var total_type_sum = 0
-        // if(this.state.friends_types.length > 0){
-        //   for(var i = 0; i<this.state.friends_types.length;i++){
-        //     total_brand_sum += this.state.friends_types[i]
-        //   }
-        // }
-        // var total_brand_sum = 0
-        // if(this.state.friends_brandnames.length > 0){
-        //   for(var i = 0; i<this.state.friends_brandnames;i++){
-        //     total += this.state.friends_brandnames[i]
-        //   }
-        // }
+
         var finalResults = []
         for(var i = 0; i<closest_distances.length; i++){
           finalResults.push((5000-closest_distances[i]) + (brandname_string[i]*100) + (type_string[i]*50) )
         }
-        console.log(finalResults)
 
-        var friend_max = -1
-        var friend_index = 0; 
-        for(var i = 0; i < finalResults.length; i++){
-          var ooga_booga = finalResults[i]
-          if(ooga_booga > friend_max){
-            friend_max = ooga_booga
-            friend_index = i 
-          }
+
+        var max_index = [0,0,0]
+
+
+        for( var j = 0; j < 3; j++)
+        {
+          var temp_max = 0;
+          var temp_index = "";
+        for(var i = 0; i < finalResults.length; i++)
+        {
+            if(finalResults[i]> temp_max)
+            {
+              temp_max  = finalResults[i];
+              temp_index = i;
+            }
         }
-        console.log(friend_index)
+
+        finalResults[temp_index] = -1;
+        max_index[j] = temp_index
+      }
+
+       
+
+        //let max_index_arr = max_index.split(",")
+
+
         
-        var recommended_user_id = -1
-        if(friend_index == 0){
-          recommended_user_id = not_friends[temp_min_index1]
-        }
-        if(friend_index == 1){
-          recommended_user_id = not_friends[temp_min_index2]
-        }
-        if(friend_index == 2){
-          recommended_user_id = not_friends[temp_min_index2]
-        }
 
-
+        console.log(max_index)
         //get relevant information w/ sql query given the recommended user id
         //can discuss how we will display these recommendations
         //cccc
+        console.log(not_3_not_friends_array)
+        var a = not_3_not_friends_array[max_index[0]]
+        var b = not_3_not_friends_array[max_index[1]]
+        var c = not_3_not_friends_array[max_index[2]]
+        var can = false
+      console.log(a,b,c)
+        Axios.post('http://localhost:3001/get_friend_recommendation',
+        {friendID1: a, friendID2: b, friendID3: c }).then(
+          (res) => {
+            for(var i = 0; i < res.data.length; i++)
+            { 
+            var x = res.data[i]
+            console.log(x)
+            add_entry(x.UserName,x.FirstName,x.LastName)
+            }
+          }
+        )
 
-        // Axios.post('http://localhost:3001/get_friend_recommendation',
-        // {friendID: recommended_user_id}).then(
-        //   (res) => {
-            
-            
-        //   }
-        // )
 
+          console.log("heeererere")
+         
+        
+        
   
 }
 
+generateHeader(){
+  let res=[];
+for(var i =0; i < columnHeader.length; i++){
+    res.push(<th key={columnHeader[i]}>{columnHeader[i]}</th>)
+}
+return res;
+}
+generateTableData(){
+
+     let res=[];
+     let tableData = product_table;
+     //""ProductID","Product Name","Type","Brand Name","Model Number","Release Year", "Color""
+     if(tableData.length > 2)
+     {
+     for(var i =1; i < 4; i++){
+         res.push(
+          <tr >
+         <td key={tableData[i].UserName}>{tableData[i].UserName}</td>
+         <td>{tableData[i].FirstName}</td>
+         <td>{tableData[i].LastName}</td>
+         </tr>
+ 
+         )
+     }
+    }
+     return res;
+ }
 
    render(){
         //this.Friend_Recommender()
@@ -412,8 +440,17 @@ Friend_Recommender(user_id)
        return(
            <div>
                <div><Button onClick={this.Friend_Recommender}>Recommend</Button> </div>
-               
-               
+        <table className="table  table-hover">
+        <thead>
+            <tr>
+            {this.generateHeader()}
+            </tr>
+        </thead>
+        <tbody>
+            {this.generateTableData()}  
+        </tbody>
+        </table>
+
            </div>
        )
    }

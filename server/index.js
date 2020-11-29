@@ -254,7 +254,7 @@ app.post('/mongo/find', async (req, res) => {
             return;
         } else {
             if (result.length > 0) {
-                console.log(result)
+                //console.log(result)
                 res.send(result)
             }
             else { res.send({ message: "empty products" }) }
@@ -277,7 +277,7 @@ app.post("/find_zipcodes", (req, res) => {
         } 
         else {
             if (result.length > 0) {
-                console.log(result)
+              //  console.log(result)
                 res.send(result)
             }
         }
@@ -299,7 +299,7 @@ app.post("/api/borrow_product",(req,res) => {
             return;
         }
         else {
-            console.log(result)
+            //console.log(result)
         }
     })
 
@@ -323,7 +323,7 @@ app.post("/find_coordinates", (req, res) => {
          } 
          else {
              if (result.length > 0) {
-                 console.log(result)
+                 //console.log(result)
                  res.send(result)
              }
          }
@@ -351,13 +351,13 @@ app.post('/mongo/add',async function (req, res) {
 
 app.post("/types", (req, res) => {
     
-    let user_id = 15 //req.body.userID
-    let notfriends = [20,16,17]//req.body.not_friends
+    let user_id = req.body.userID
+    let notfriends = req.body.not_friends
 
     let person1 = notfriends[0];
     let person2 = notfriends[1];
     let person3 = notfriends[2];
-    //console.log(not)
+    //console.log(notfriends)
     
     let user_list = [];
     let person1_list = [];
@@ -377,7 +377,7 @@ app.post("/types", (req, res) => {
          } 
          else {
              if (result.length > 0) {
-                 console.log(result)
+                 //console.log(result)
               
                  for (var i = 0; i <result.length; i++)
                  {
@@ -388,7 +388,7 @@ app.post("/types", (req, res) => {
                      }
                      if(result[i].userID == person1)
                      {
-                         console.log(result[i].userID)
+                        // console.log(result[i].userID)
                         person1_list.push({type:result[i].type,num:result[i].num})
                         c1 = c1+ 1;
                      }
@@ -408,7 +408,7 @@ app.post("/types", (req, res) => {
                  JSON.stringify(person1_list);
                  JSON.stringify(person2_list);
                  JSON.stringify(person3_list);
-                 console.log(person1_list)
+                 //console.log(person1_list)
                  let total = [];
                  let t1 = 0; 
                  let t2 = 0;
@@ -495,7 +495,7 @@ app.post("/types", (req, res) => {
          } 
          else {
              if (result.length > 0) {
-                 console.log(result)
+                 //console.log(result)
               
                  for (var i = 0; i <result.length; i++)
                  {
@@ -506,7 +506,7 @@ app.post("/types", (req, res) => {
                      }
                      if(result[i].userID == person1)
                      {
-                         console.log(result[i].userID)
+                        // console.log(result[i].userID)
                         person1_list.push({type:result[i].type,num:result[i].num})
                         c1 = c1+ 1;
                      }
@@ -526,7 +526,7 @@ app.post("/types", (req, res) => {
                  JSON.stringify(person1_list);
                  JSON.stringify(person2_list);
                  JSON.stringify(person3_list);
-                 console.log(person1_list)
+                 //console.log(person1_list)
                  let total = [];
                  let t1 = 0; 
                  let t2 = 0;
@@ -582,6 +582,29 @@ app.post("/types", (req, res) => {
     
  })
 
+ app.post("/get_friend_recommendation",(req,res) => {
+   const person1 = req.body.friendID1;
+   const person2 = req.body.friendID2;
+   const person3 = req.body.friendID3;
+    console.log(person1)
+    console.log(person2)
+    console.log(person3)
 
+
+   
+    
+    const sqlInsert = "Select UserName, FirstName, LastName From User where userID = ?  UNION Select UserName, FirstName, LastName From User where userID = ?  UNION  Select UserName, FirstName, LastName From User where userID = ? ;"
+    con.query(sqlInsert, [person1,person2,person3], (err, result) => {
+        console.log(result)
+        if (err) {
+            console.error('Database insert into borrowinfo failed: ' + err.stack);
+            return;
+        }
+        else {
+            
+            res.send(result)
+        }
+    })
+})
 
 app.listen(3001, () => { console.log("running on 3001"); });
