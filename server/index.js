@@ -609,6 +609,8 @@ app.post("/types", (req, res) => {
 
  mongoose.set('useFindAndModify', false);
  app.post('/mongo/add_friend',async function (req, res) {
+     console.log(req.body.id)
+     console.log(parseInt(req.body.id))
     userModel.findOneAndUpdate(
         { user_id: req.body.id }, 
         { $push: { friend_list: req.body.friend  } },
@@ -616,9 +618,20 @@ app.post("/types", (req, res) => {
              if (error) {
                  console.log(error);
              } else {
-                 res.send("")
+                 //res.send("")
              }
          });
+
+         userModel.findOneAndUpdate(
+            { user_id: req.body.friend }, 
+            { $push: { friend_list: parseInt(req.body.id) } },
+           function (error, success) {
+                 if (error) {
+                     console.log(error);
+                 } else {
+                     res.send("")
+                 }
+             });   
 });
 
 app.listen(3001, () => { console.log("running on 3001"); });

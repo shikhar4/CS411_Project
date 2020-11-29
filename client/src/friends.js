@@ -251,7 +251,7 @@ Friend_Recommender(user_id)
 
   if(this.state.zipcodes.length === this.state.lat_long.length)
   {
-        
+    this.setState({friends_recommendation_table: []})
         let closest_distances = []
         var not_3_not_friends_array = [0,0,0]
         this.setState({distances: []})
