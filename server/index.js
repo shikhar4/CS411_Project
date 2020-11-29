@@ -616,7 +616,7 @@ app.post("/types", (req, res) => {
              if (error) {
                  console.log(error);
              } else {
-                 console.log(success);
+                 res.send("")
              }
          });
 });

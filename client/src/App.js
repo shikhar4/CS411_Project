@@ -35,7 +35,7 @@ class App extends Component {
               <li><Link to={'/delete'} className="nav-link">Delete</Link></li>
               <li><Link to={'/my_account'} className="nav-link">Account</Link></li>
 
-              <li><Link to={'/friends'} className="nav-link">Friends</Link></li>
+              <li><Link to={'/friends'} className="nav-link">Friend Recommender</Link></li>
 
               <li><Link to={'/borrowed_items'} className="nav-link">My Borrowed Items</Link></li>
 

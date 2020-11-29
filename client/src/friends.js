@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
 var s = "0"
 var f = "0"
@@ -92,7 +93,8 @@ addFriend(userID){
   Axios.post('http://localhost:3001/mongo/add_friend',
   {friend : userID, id: localStorage.getItem("user_id_global")}).then(
     (res) => {
-
+      alert("User added as friend successfully. Please refresh page!");
+      <Redirect to ="/"/>   
     }
   )
 }
@@ -280,7 +282,8 @@ Friend_Recommender(user_id)
               temp_min_index1 = i; 
             }
           }
-
+  
+          
           temp_min = this.state.distances[0].distance
           var temp_min_index2 = 0; 
           for(var i = 0; i < this.state.distances.length; i++){
@@ -290,7 +293,7 @@ Friend_Recommender(user_id)
               temp_min_index2 = i; 
             }
           }
-
+          
           temp_min = this.state.distances[0].distance
           var temp_min_index3 = 0; 
           for(var i = 0; i < this.state.distances.length; i++){
