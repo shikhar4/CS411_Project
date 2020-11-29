@@ -266,7 +266,7 @@ var s = "";
 app.post("/find_zipcodes", (req, res) => {
     
     const user_ID = req.body.userID
-   let not = req.body.not_friends
+    let not = req.body.not_friends
    //console.log(not)
 
 
@@ -350,10 +350,10 @@ app.post('/mongo/add',async function (req, res) {
 
 
 app.post("/types", (req, res) => {
+    console.log("NOT_FRIENDS /TYPES POST",req.body.not_friends)
+    let user_id = req.body.userID
+    let notfriends = req.body.not_friends
     
-    let user_id = 15 //req.body.userID
-    let notfriends = [20,16,17]//req.body.not_friends
-
     let person1 = notfriends[0];
     let person2 = notfriends[1];
     let person3 = notfriends[2];
@@ -469,8 +469,8 @@ app.post("/types", (req, res) => {
 
  app.post("/brandname", (req, res) => {
     
-    let user_id = 15 //req.body.userID
-    let notfriends = [20,16,17]//req.body.not_friends
+    let user_id = req.body.userID
+    let notfriends = req.body.not_friends
 
     let person1 = notfriends[0];
     let person2 = notfriends[1];
@@ -582,6 +582,43 @@ app.post("/types", (req, res) => {
     
  })
 
+ app.post("/get_friend_recommendation",(req,res) => {
+    const person1 = req.body.friendID1;
+    const person2 = req.body.friendID2;
+    const person3 = req.body.friendID3;
+     console.log(person1)
+     console.log(person2)
+     console.log(person3)
+ 
+ 
+    
+     
+     const sqlInsert = "Select UserName, FirstName, LastName, userID From user where userID = ?  UNION Select UserName, FirstName, LastName,userID From User where userID = ?  UNION  Select UserName, FirstName, LastName,userID From User where userID = ? ;"
+     con.query(sqlInsert, [person1,person2,person3], (err, result) => {
+         console.log(result)
+         if (err) {
+             console.error('Database insert into borrowinfo failed: ' + err.stack);
+             return;
+         }
+         else {
+             
+             res.send(result)
+         }
+     })
+ })
 
+ mongoose.set('useFindAndModify', false);
+ app.post('/mongo/add_friend',async function (req, res) {
+    userModel.findOneAndUpdate(
+        { user_id: req.body.id }, 
+        { $push: { friend_list: req.body.friend  } },
+       function (error, success) {
+             if (error) {
+                 console.log(error);
+             } else {
+                 console.log(success);
+             }
+         });
+});
 
 app.listen(3001, () => { console.log("running on 3001"); });
