@@ -227,6 +227,7 @@ Friend_Recommender(user_id)
         //const {zipcode} = this.state.zipcodes[0]
         
         let promLatLongArr = []
+        this.setState({lat_long: []})
         for(var i = 0; i < this.state.zipcodes.length; i++)
         {
   
@@ -242,10 +243,12 @@ Friend_Recommender(user_id)
           }
         }).catch(err => {console.log(err)})
         if(this.state.lat_long.length > 0){
-          console.log(this.state.lat_long[0].lat_long.lat)
+          //console.log(this.state.lat_long[0].lat_long.lat)
         }
         console.log("LATLONG",this.state.lat_long)
-        
+
+  if(this.state.zipcodes.length === this.state.lat_long.length)
+  {
         
         let closest_distances = []
         var not_3_not_friends_array = [0,0,0]
@@ -305,13 +308,13 @@ Friend_Recommender(user_id)
           console.log("NOT_FRIENDS",not_friends)
 
           this.setState({closest_distance_not_friends: []})
-          this.add_not_friends(not_friends[temp_min_index1])
-          this.add_not_friends(not_friends[temp_min_index2])
-          this.add_not_friends(not_friends[temp_min_index3])
+          this.add_not_friends(not_friends[temp_min_index1+1])
+          this.add_not_friends(not_friends[temp_min_index2+1])
+          this.add_not_friends(not_friends[temp_min_index3+1])
           console.log(this.state.closest_distance_not_friends)
-          not_3_not_friends_array[0] = not_friends[temp_min_index1]
-          not_3_not_friends_array[1] = not_friends[temp_min_index2]
-          not_3_not_friends_array[2] = not_friends[temp_min_index3]
+          not_3_not_friends_array[0] = not_friends[temp_min_index1+1]
+          not_3_not_friends_array[1] = not_friends[temp_min_index2+1]
+          not_3_not_friends_array[2] = not_friends[temp_min_index3+1]
 
           closest_distances.push(this.state.distances[temp_min_index1].distance)
           closest_distances.push(this.state.distances[temp_min_index2].distance)
@@ -450,7 +453,7 @@ Friend_Recommender(user_id)
       }
     }
     }
-      
+  }//fat if
 }
 
 
