@@ -135,7 +135,7 @@ Friend_Recommender(user_id)
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
        // console.log(res.data[0].friend_list)
         //console.log(res.data)
-        if(res.data[0].length > 0){
+        //if(res.data[0].length > 0){
         for(var i = 0; i < res.data[0].friend_list.length; i++)
         { 
           var x = res.data[0].friend_list[i]
@@ -143,7 +143,7 @@ Friend_Recommender(user_id)
           f= f + JSON.stringify(x);
           //console.log(f)
         }
-      }
+      //}
     
       })
       //console.log(f)
@@ -288,7 +288,7 @@ Friend_Recommender(user_id)
           }
   
           
-          temp_min = this.state.distances[0].distance
+          temp_min = 5000
           var temp_min_index2 = 0; 
           for(var i = 0; i < this.state.distances.length; i++){
             var dummy = this.state.distances[i].distance
@@ -298,7 +298,7 @@ Friend_Recommender(user_id)
             }
           }
           
-          temp_min = this.state.distances[0].distance
+          temp_min = 5000
           var temp_min_index3 = 0; 
           for(var i = 0; i < this.state.distances.length; i++){
             var dummy2 = this.state.distances[i].distance
