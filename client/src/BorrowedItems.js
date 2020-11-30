@@ -1,81 +1,90 @@
 import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
+import {Link} from 'react-router-dom';
 var product_table = [] 
 var b = 0
-const columnHeader =["productID","borrowerID","ownerID","DueDate", "BorrowDate"];
-function add_entry(productID,borrowerID,ownerID,DueDate, BorrowDate){
-    product_table.push({productID,borrowerID,ownerID,DueDate, BorrowDate})
-  }
+var table_data = []
+var head = []
+const columnHeader =["UserName","Product Name","Brand","DueDate", "BorrowDate"];
+
 class BorrowedItems extends Component {
     constructor(props){
         super(props)
         this.state={
-
+          product_table : []
         }
-        this.search = this.search.bind(this);
-        this.generateHeader = this.generateHeader.bind(this);
-        this.generateTableData = this.generateTableData.bind(this);
+        this.returnItem = this.returnItem.bind(this); 
+        this.add_entry = this.add_entry.bind(this)
+        this.refreshTable = this.refreshTable.bind(this)
     }
-    search() {
-        Axios.post('http://localhost:3001/api/search_borrowed_items',
+    add_entry(UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID){
+      const product_arr = {UserName, productName, brandName, DueDate, BorrowDate,borrowerID, ownerID,productID}
+      this.setState(prevState =>({
+        product_table : [...prevState.product_table, product_arr]
+      }))
+    }
+    refreshTable(){
+      head = [] 
+      table_data = []
+      
+      Axios.post('http://localhost:3001/api/search_borrowed_items',
         {userID:localStorage.getItem("user_id_global")}).then((res)=>{
           product_table = [];
           for(var i = 0; i < res.data.length; i++)
           { 
             var x = res.data[i]
-            add_entry(x.productID, x.borrowerID, x.ownerID, x.DueDate, x.BorrowDate)
+            this.add_entry(x.UserName, x.productName,x.brandName, x.DueDate, x.BorrowDate,x.borrowerID, x.ownerID,x.productID)
           }
-          //localStorage.setItem("Table_data", data)
         
         })
-        b= 1;
-      }
-    generateHeader(){
-        let res=[];
-         for(var i =0; i < columnHeader.length; i++){
-          res.push(<th key={columnHeader[i]}>{columnHeader[i]}</th>)
-        }
-        console.log(res)
-      return res;
-    }
+      this.setState({product_table:[]})
+      if(this.state.product_table.length > 0){
+        head.push(<th key={'Username'}>{'Username'}</th>)
+        head.push(<th key={'ProductName'}>{'Product Name'}</th>)
+        head.push(<th key={'Brand'}>{'Brand'}</th>)
+        head.push(<th key={'DueDate'}>{'Due Date'}</th>)
+        head.push(<th key={'DueDate'}>{'Borrow  Date'}</th>)
 
-    generateTableData(){
-        this.search();
-        let res=[];
-        let tableData = product_table;
-        if(b){
-            console.log(tableData.length)
+        for(var i = 0; i < this.state.product_table.length; i++){
+          const {UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID} = this.state.product_table[i]
+          console.log(borrowerID, ownerID, productID)
+          table_data.push(
+            <tr>
+              <td>{UserName}</td>
+              <td>{productName}</td>
+              <td>{brandName}</td>
+              <td>{DueDate}</td>
+              <td>{BorrowDate}</td>
+              <td><Link to = '/borrowed_items'><Button onClick = {()=>this.returnItem(borrowerID,ownerID,productID)}> Return Item </Button></Link></td>
+            </tr>)
         }
-       //"productID","ProductName","type","dateBorrowed","dateDue","borrowerID"
-        for(var i =0; i < tableData.length; i++){
-           res.push(
-            <tr >
-                <td key={tableData[i].productID}>{tableData[i].productID}</td>
-                <td>{tableData[i].borrowerID}</td>
-                <td>{tableData[i].ownerID}</td>
-                <td>{tableData[i].DueDate}</td>
-                <td >{tableData[i].BorrowDate}</td>
-            </tr>
-           )
-       }
-       return res;
+      }
+      
+    }
+    returnItem(borrowerID, ownerID,productID){
+      console.log(borrowerID, ownerID, productID)
+      Axios.post('http://localhost:3001/api/return_item',
+        {borrowID:borrowerID, ownID:ownerID, prodID:productID})
     }
     render(){
     
         return(
+          <>
+            <div><Button onClick ={this.refreshTable}>Refresh Table</Button></div>
             <div>
          <table className="table  table-hover">
          <thead>
              <tr>
-             {this.generateHeader()}
+             {head}
              </tr>
          </thead>
          <tbody>
-             {this.generateTableData()}
+             {table_data}
          </tbody>
          </table>
             </div>
+          </>
         )
     }
 }

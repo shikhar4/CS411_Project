@@ -126,13 +126,16 @@ calculate_distance(lat1,lon1,lat2,lon2){
 Friend_Recommender(user_id)
 {  
     var x = 0;
-    
+    if(localStorage.getItem("user_id_global") == 0 ){
+      alert("Please Login for Friend Recommendations!")
+    }
     //console.log("before first for loop")
     //first step is to find the 3 closest people that are not friends
     Axios.post('http://localhost:3001/mongo/find',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
        // console.log(res.data[0].friend_list)
         //console.log(res.data)
+        if(res.data[0].length > 0){
         for(var i = 0; i < res.data[0].friend_list.length; i++)
         { 
           var x = res.data[0].friend_list[i]
@@ -140,6 +143,7 @@ Friend_Recommender(user_id)
           f= f + JSON.stringify(x);
           //console.log(f)
         }
+      }
     
       })
       //console.log(f)

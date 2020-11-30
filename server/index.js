@@ -112,10 +112,30 @@ app.post("/api/search", (req, res) => {
     })
 })
 
+app.post("/api/return_item", (req,res) =>{
+    const borrowerID = req.body.borrowID
+    const ownerID = req.body.ownID
+    const productID = req.body.prodID
+
+    const sqlDelete = "DELETE FROM borrowinfo WHERE productID = ? AND borrowerID = ? AND ownerID = ? "
+    con.query(sqlDelete, [productID,borrowerID,ownerID], (err,result)=>{
+        if (err) {
+            console.error('Database delete for borrowinfo failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "nothing to delete" }) }
+        }  
+    })
+})
+
 app.post("/api/search_borrowed_items", (req, res) => {
     const user_ID = req.body.userID
 
-    const sqlSearch = "SELECT DISTINCT * FROM borrowinfo WHERE borrowerID = ?"
+    const sqlSearch = "SELECT DISTINCT u.UserName, p.productName, p.brandName, b.DueDate, b.BorrowDate, b.borrowerID, b.ownerID,b.productID FROM (borrowinfo as b JOIN product as p ON b.productID = p.productID) JOIN user u ON u.userID = p.userID where b.borrowerID = ?"
     con.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
             console.error('Database search for borrowinfo failed: ' + err.stack);
@@ -303,8 +323,17 @@ app.post("/api/borrow_product",(req,res) => {
         }
     })
 
-    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE product "
-})
+    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE productID = ?"
+    con.query(sqlUpdate,productID, (err, result) => {
+        if (err) {
+            console.error('Database insert into borrowinfo failed: ' + err.stack);
+            return;
+        }
+        else {
+            console.log(result)
+        }
+    })
+}) 
 
 //mogno db connection
 
