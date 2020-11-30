@@ -129,7 +129,13 @@ body{
 
 
 /*end Home.js CSS///////////////////////////////////*/
-
+#dropdown{
+  float: left;
+  clear:left;
+  width: 250px;
+  margin-left:100px;
+  margin-bottom: 15px;
+}
 .InputLabels{
   display: inline-block;
   float: left;
