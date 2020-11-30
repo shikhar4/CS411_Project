@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 
-class insert1 extends Component {
+class Insert extends Component {
 
   constructor(props) {
     super(props);
@@ -34,6 +34,12 @@ class insert1 extends Component {
     Axios.post('http://localhost:3001/api/insert_product',
       { userID: localStorage.getItem("user_id_global"), name: this.state.productName, type: this.state.type, brandName: this.state.brandname, modelNumber:this.state.modelNumber, releaseYear:this.state.releaseYear, color:this.state.color }).then(() => {
       })
+    this.setState({productName: ""})
+    this.setState({type: ""})
+    this.setState({color: ""})
+    this.setState({brandname: ""})
+    this.setState({modelNumber: ""})
+    this.setState({releaseYear: ""})
   }
 
   render() {
@@ -75,4 +81,4 @@ class insert1 extends Component {
   };
 }
 
-export default insert1; 
+export default Insert; 

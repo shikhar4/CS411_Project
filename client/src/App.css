@@ -65,6 +65,7 @@
   transition: all 250ms ease-in-out;
   cursor: pointer; 
   margin-bottom: 10px;
+  
 }
 .LoginButton:focus{
   outline: none;
@@ -88,6 +89,17 @@
 }
 /*end Login.js CSS/////////////////////////////// */
 
+
+/*Home.js CSS/.//////////////////////////////////////*/
+#Items_Table{
+  visibility:visible; 
+}
+
+
+
+
+
+/*end Home.js CSS///////////////////////////////////*/
 
 .InputLabels{
   display: inline-block;

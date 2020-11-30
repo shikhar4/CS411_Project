@@ -1,5 +1,6 @@
 import './App.css';
 import React, { Component } from 'react';
+import { Button } from "react-bootstrap";
 //import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import Axios from 'axios'
@@ -8,7 +9,7 @@ import Login from './Login';
 import register from './register';
 import Search from './search';
 import Delete from './Delete';
-import insert1 from './insert1';
+import Insert from './insert1';
 import my_account from './my_account';
 
 import friends from './friends';
@@ -21,6 +22,19 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state={}
+    this.clearAccountInfo = this.clearAccountInfo.bind(this);
+  }
+  clearAccountInfo(){
+    localStorage.setItem("firstname_global", "");
+    localStorage.setItem("lastname_global", "");
+    localStorage.setItem("email_global", "");
+    localStorage.setItem("phonenumber_global", "");
+    localStorage.setItem("zipcode_global", "");
+    localStorage.setItem("password_global", "");
+   }
   render() {
     return (
       <Router>
@@ -30,14 +44,15 @@ class App extends Component {
             <ul className="navbar-nav mr-auto">
               {/* <li><Link to={'/'} className="nav-link"> Login </Link></li>  */}
               <li><Link to={'/home'} className="nav-link">Home</Link></li>
-              <li><Link to={'/insert1'} className="nav-link">Insert</Link></li>
+              
               <li><Link to={'/search'} className="nav-link">Search</Link></li>
-              <li><Link to={'/delete'} className="nav-link">Delete</Link></li>
+              
               <li><Link to={'/my_account'} className="nav-link">Account</Link></li>
 
               <li><Link to={'/friends'} className="nav-link">Friend Recommender</Link></li>
 
               <li><Link to={'/borrowed_items'} className="nav-link">My Borrowed Items</Link></li>
+              <Link to = '/'><Button onClick={this.clearAccountInfo}>Log Out</Button></Link>
 
             </ul>
           </nav>
@@ -46,9 +61,9 @@ class App extends Component {
             <Route exact path='/' component={Login} />
             <Route path='/reg' component={register} />
             <Route path='/home' component={Home} />
-            <Route path='/insert1' component={insert1} />
+            
             <Route path='/search' component={Search} />
-            <Route path='/Delete' component={Delete} />
+            
             <Route path='/my_account' component={my_account} />
 
             <Route path='/friends' component={friends} />
