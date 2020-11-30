@@ -45,6 +45,7 @@ class Insert extends Component {
   render() {
     return (
       <>
+        <div className = "Functionality">
         <h3>Insert Product</h3>
         <div>
           <label className="InputLabels">Product Name: </label><input type="text" value={this.state.productName} onChange={this.handleChange_productName} class="Input" placeholder="Name" />
@@ -55,6 +56,7 @@ class Insert extends Component {
           <label className="InputLabels">Color: </label><input type="text" value={this.state.color} onChange={this.handleChange_color} class="Input" placeholder="Color" />
         </div>
         <div><Button onClick={this.submitproduct}>Submit</Button> </div>
+        </div>
       </>
 
     )

@@ -25,7 +25,7 @@ class Search extends Component {
    generateSearchBar(){
      return(
      <>
-      <h3>Search For a Product</h3>
+      <h3 id = "search_header">Search For a Product</h3>
       <div>
       
       <label className="InputLabels"> Product: </label><input type="text" value={this.state.productName} onChange={this.handleChange_productName} class="Input" placeholder="Name" />
@@ -63,6 +63,7 @@ class Search extends Component {
       head.push(<th key={'ProductName'}>{'ProductName'}</th>)
       head.push(<th key={'type'}>{'type'}</th>)
       head.push(<th key={'brandName'}>{'brandName'}</th>)
+      head.push(<th key={''}>{''}</th>)
       
       for(var i =0; i < this.state.productInfo.length; i++){
         const {Username, ProductName,type,brandName,productID, userID } = this.state.productInfo[i]

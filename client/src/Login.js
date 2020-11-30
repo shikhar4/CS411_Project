@@ -83,15 +83,15 @@ login() {
       <h1 className = "BorrowMe_Title"></h1>
       <div className="Login_Page">
       {/* <div class="form-group"> */}
-      <div className="header">Login</div>
       <Form className = "customForm">
-        <FormGroup className = "customFormGroup" controlId="Username">
+        <h1 className="header">Login</h1>
+        <FormGroup className = "customFormGroup" >
           <FormLabel>Username</FormLabel>
           <FormControl type = "email" value = {this.state.userId} onChange={this.handleChange_userid} className = "form_inputs"/>
           <small className = "errorMessage"> {messages} </small>
         </FormGroup>
 
-        <FormGroup className = "customFormGroup" controlId="Password">
+        <FormGroup className = "customFormGroup" >
           <FormLabel>Password</FormLabel>
           <FormControl type = "password" value = {this.state.password} onChange={this.handleChange_password} className = "form_inputs"/>
         </FormGroup>

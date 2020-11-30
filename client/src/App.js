@@ -38,9 +38,9 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div>
-          <h2>Welcome to Borrow Me</h2>
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div id = "navbar_div">
+          
+          <nav className="navbar navbar-expand-lg navbar-light w-100" id = "nav_bar">
             <ul className="navbar-nav mr-auto">
               {/* <li><Link to={'/'} className="nav-link"> Login </Link></li>  */}
               <li><Link to={'/home'} className="nav-link">Home</Link></li>
@@ -52,10 +52,12 @@ class App extends Component {
               <li><Link to={'/friends'} className="nav-link">Friend Recommender</Link></li>
 
               <li><Link to={'/borrowed_items'} className="nav-link">My Borrowed Items</Link></li>
-              <Link to = '/'><Button onClick={this.clearAccountInfo}>Log Out</Button></Link>
+              
 
             </ul>
+            <Link to = '/'><Button className="LoginButton" onClick={this.clearAccountInfo}>Log Out</Button></Link>
           </nav>
+          </div>
           <hr />
           <Switch>
             <Route exact path='/' component={Login} />
@@ -71,7 +73,7 @@ class App extends Component {
             <Route path='/borrowed_items' component={BorrowedItems} />
 
           </Switch>
-        </div>
+        
       </Router>
     );
   }

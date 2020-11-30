@@ -12,6 +12,9 @@ const columnHeader =["ProductID","ProductName","Type","BrandName","ModelNumber",
 const user_id = localStorage.getItem("user_id_global")
 var product_table =[];
 var table_data = []
+
+var friend_table = []
+var friend_head = []
 var head = []
 
 
@@ -30,6 +33,7 @@ class Home extends Component {
        this.refreshTable = this.refreshTable.bind(this)
        this.loadInsertTable = this.loadInsertTable.bind(this)
        this.loadDeleteTable = this.loadDeleteTable.bind(this)
+       this.getFriendData = this.getFriendData.bind(this)
       //  this.add_entry = this.add_entry(this);
    }
 
@@ -39,6 +43,24 @@ class Home extends Component {
       this.setState(prevState =>({
         product_table : [...prevState.product_table, product_arr]
       }))
+  }
+
+  getFriendData(){ 
+    Axios.post('http://localhost:3001/mongo/find',
+    {userID:localStorage.getItem("user_id_global")}).then((res)=>{
+       // console.log(res.data[0].friend_list)
+        console.log(res.data[0].friend_list[0])
+        
+        for(var i = 0; i < res.data[0].friend_list.length; i++)
+        { 
+          console.log(res.data[0].friend_list[i])
+          friend_table.push(res.data[0].friend_list[i])
+          
+        }
+      
+    
+      })
+    console.log(friend_table)
   }
 
   refreshTable(){
@@ -116,9 +138,10 @@ class Home extends Component {
          <>
          <Container>
           <Row>
-            <Col><Button onClick = {this.refreshTable}>Your Items</Button></Col>
-            <Col><Button onClick = {this.loadInsertTable} >Insert Item</Button></Col>
-            <Col><Button onClick = {this.loadDeleteTable} >Delete Item</Button></Col>
+            <Col md = "auto"><Button onClick = {this.refreshTable}>Your Items</Button></Col>
+            <Col md = "auto"><Button onClick = {this.loadInsertTable} >Insert Item</Button></Col>
+            <Col md = "auto"><Button onClick = {this.loadDeleteTable} >Delete Item</Button></Col>
+            <Col md = "auto"><Button onClick = {this.getFriendData}> My Friends</Button></Col>
           </Row>
           </Container>
       

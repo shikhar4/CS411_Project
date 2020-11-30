@@ -1,8 +1,22 @@
+body{
+  background-color: white;
+}
+
 .BorrowMe_Title {
   text-align: center;
   line-height: 650px;
   position: relative; left:-9px;
 }
+#App{
+  width:100%;
+}
+.navbar-light {
+  background-color: lightskyblue;
+}
+/* #nav_bar{
+  color:red;
+  width:100%;
+} */
 /* Login.js CSS  /////////////////////////////*/
 .Login_Page form {
   margin: 0;
@@ -10,14 +24,17 @@
   top: 50%;
   left: 50%;
   margin-right: -50%;
+  border-radius: 25px;
   transform: translate(-50%, -50%);
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  padding: 40px;
+  box-shadow:10px 10px 30px black; 
+  font-family: "Open Sans", sans-serif;
 }
 .header {
-  margin-top: 165px;
   font-size: 24px;
   font-family: "Open Sans", sans-serif;
   text-align: center;
@@ -92,9 +109,21 @@
 
 /*Home.js CSS/.//////////////////////////////////////*/
 #Items_Table{
-  visibility:visible; 
+  visibility:visible;
+  width : 80%;
+  margin-left:20px;
+  margin-right:20px;
 }
-
+/* .table{
+  margin-left:20px;
+  margin-right:20px;
+  
+} */
+.row{
+  /* margin-left:20px;
+  margin-right:20px; */
+  margin-bottom: 15px;
+}
 
 
 
@@ -123,3 +152,25 @@
   text-align:left;
   
 }
+.Functionality{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+/* #search_header{
+  margin-left: 20px;
+  margin-right: 20px;
+} */
+
+/* Responsive Layout */
+@media(min-width: 768px) {
+  .container {
+    max-width: 100%;
+    margin-left: 20px;
+    margin-right:20px;
+    padding: 0px;
+  }
+}
+
+
+
+
