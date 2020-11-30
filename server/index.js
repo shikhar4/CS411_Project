@@ -112,10 +112,30 @@ app.post("/api/search", (req, res) => {
     })
 })
 
+app.post("/api/return_item", (req,res) =>{
+    const borrowerID = req.body.borrowID
+    const ownerID = req.body.ownID
+    const productID = req.body.prodID
+
+    const sqlDelete = "DELETE FROM borrowinfo WHERE productID = ? AND borrowerID = ? AND ownerID = ? "
+    con.query(sqlDelete, [productID,borrowerID,ownerID], (err,result)=>{
+        if (err) {
+            console.error('Database delete for borrowinfo failed: ' + err.stack);
+            return;
+        } else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+            else { res.send({ message: "nothing to delete" }) }
+        }  
+    })
+})
+
 app.post("/api/search_borrowed_items", (req, res) => {
     const user_ID = req.body.userID
 
-    const sqlSearch = "SELECT DISTINCT * FROM borrowinfo WHERE borrowerID = ?"
+    const sqlSearch = "SELECT DISTINCT u.UserName, p.productName, p.brandName, b.DueDate, b.BorrowDate, b.borrowerID, b.ownerID,b.productID FROM (borrowinfo as b JOIN product as p ON b.productID = p.productID) JOIN user u ON u.userID = p.userID where b.borrowerID = ?"
     con.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
             console.error('Database search for borrowinfo failed: ' + err.stack);
@@ -266,7 +286,7 @@ var s = "";
 app.post("/find_zipcodes", (req, res) => {
     
     const user_ID = req.body.userID
-   let not = req.body.not_friends
+    let not = req.body.not_friends
    //console.log(not)
 
 
@@ -303,8 +323,17 @@ app.post("/api/borrow_product",(req,res) => {
         }
     })
 
-    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE product "
-})
+    const sqlUpdate = "UPDATE product SET isBorrowed = 1 WHERE productID = ?"
+    con.query(sqlUpdate,productID, (err, result) => {
+        if (err) {
+            console.error('Database insert into borrowinfo failed: ' + err.stack);
+            return;
+        }
+        else {
+            console.log(result)
+        }
+    })
+}) 
 
 //mogno db connection
 
@@ -349,11 +378,11 @@ app.post('/mongo/add',async function (req, res) {
 
 
 
-app.get("/types", (req, res) => {
+app.post("/types", (req, res) => {
+    console.log("NOT_FRIENDS /TYPES POST",req.body.not_friends)
+    let user_id = req.body.userID
+    let notfriends = req.body.not_friends
     
-    let user_id = 15 //req.body.userID
-    let notfriends = [20,16,17]//req.body.not_friends
-
     let person1 = notfriends[0];
     let person2 = notfriends[1];
     let person3 = notfriends[2];
@@ -455,7 +484,7 @@ app.get("/types", (req, res) => {
 
 
 
-                 res.send(JSON.stringify(total))
+                 res.send(total.toString())
              
                 }
 
@@ -467,10 +496,10 @@ app.get("/types", (req, res) => {
 
 
 
- app.get("/brandname", (req, res) => {
+ app.post("/brandname", (req, res) => {
     
-    let user_id = 15 //req.body.userID
-    let notfriends = [20,16,17]//req.body.not_friends
+    let user_id = req.body.userID
+    let notfriends = req.body.not_friends
 
     let person1 = notfriends[0];
     let person2 = notfriends[1];
@@ -573,7 +602,7 @@ app.get("/types", (req, res) => {
 
 
 
-                 res.send(JSON.stringify(total))
+                 res.send(total.toString())
              
                 }
 
@@ -582,6 +611,56 @@ app.get("/types", (req, res) => {
     
  })
 
+ app.post("/get_friend_recommendation",(req,res) => {
+    const person1 = req.body.friendID1;
+    const person2 = req.body.friendID2;
+    const person3 = req.body.friendID3;
+     console.log(person1)
+     console.log(person2)
+     console.log(person3)
+ 
+ 
+    
+     
+     const sqlInsert = "Select UserName, FirstName, LastName, userID From user where userID = ?  UNION Select UserName, FirstName, LastName,userID From User where userID = ?  UNION  Select UserName, FirstName, LastName,userID From User where userID = ? ;"
+     con.query(sqlInsert, [person1,person2,person3], (err, result) => {
+         console.log(result)
+         if (err) {
+             console.error('Database insert into borrowinfo failed: ' + err.stack);
+             return;
+         }
+         else {
+             
+             res.send(result)
+         }
+     })
+ })
 
+ mongoose.set('useFindAndModify', false);
+ app.post('/mongo/add_friend',async function (req, res) {
+     console.log(req.body.id)
+     console.log(parseInt(req.body.id))
+    userModel.findOneAndUpdate(
+        { user_id: req.body.id }, 
+        { $push: { friend_list: req.body.friend  } },
+       function (error, success) {
+             if (error) {
+                 console.log(error);
+             } else {
+                 //res.send("")
+             }
+         });
+
+         userModel.findOneAndUpdate(
+            { user_id: req.body.friend }, 
+            { $push: { friend_list: parseInt(req.body.id) } },
+           function (error, success) {
+                 if (error) {
+                     console.log(error);
+                 } else {
+                     res.send("")
+                 }
+             });   
+});
 
 app.listen(3001, () => { console.log("running on 3001"); });
