@@ -65,7 +65,10 @@ class BorrowedItems extends Component {
     returnItem(borrowerID, ownerID,productID){
       console.log(borrowerID, ownerID, productID)
       Axios.post('http://localhost:3001/api/return_item',
-        {borrowID:borrowerID, ownID:ownerID, prodID:productID})
+        {borrowID:borrowerID, ownID:ownerID, prodID:productID}).then(
+          (res) => {
+            alert("Item returned successfully. Please refresh page!");
+          })
     }
     render(){
     

@@ -49,7 +49,7 @@ class Search extends Component {
      this.setState({productInfo: []})
      console.log(this.state.productInfo)
     Axios.post('http://localhost:3001/api/search_product',
-    {ProductName: this.state.productName}).then((res)=>{
+    {ProductName: this.state.productName, userID: localStorage.getItem("user_id_global")}).then((res)=>{
       for(var i = 0; i < res.data.length; i++){
         var user = res.data[i];
         this.add_product_info(user.UserName, user.ProductName, user.type, user.brandName, user.productID,user.userID)

@@ -130,6 +130,17 @@ app.post("/api/return_item", (req,res) =>{
             else { res.send({ message: "nothing to delete" }) }
         }  
     })
+
+    const sqlUpdate = "UPDATE product SET isBorrowed = 0 WHERE productID = ?"
+    con.query(sqlUpdate,productID, (err, result) => {
+        if (err) {
+            console.error('Database insert into borrowinfo failed: ' + err.stack);
+            return;
+        }
+        else {
+            console.log(result)
+        }
+    })
 })
 
 app.post("/api/search_borrowed_items", (req, res) => {
@@ -151,10 +162,11 @@ app.post("/api/search_borrowed_items", (req, res) => {
 })
 
 app.post("/api/search_product", (req,res) =>{
+    const user_id = req.body.userID;
     const product = '%' + req.body.ProductName + '%'
     console.log(product) 
-    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0"
-    con.query(sqlSearchProduct, [product], (err,result) => {
+    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0 AND product.userID <> ?"
+    con.query(sqlSearchProduct, [product,user_id], (err,result) => {
         if(err){
             console.error("Database search for product failed: " + err.stack)
             return; 
