@@ -56,7 +56,7 @@ app.post("/api/delete", (req, res) => {
     const user_name = req.body.user
     const product_name = req.body.product
 
-    const sqlDelete = "DELETE FROM product WHERE userID = ? AND ProductName = ?"
+    const sqlDelete = "DELETE FROM product WHERE userID = ? AND productID = ?"
     con.query(sqlDelete, [user_name, product_name], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
@@ -162,17 +162,18 @@ app.post("/api/search_borrowed_items", (req, res) => {
     })
 })
 
-app.post("/api/search_product", (req, res) => {
+app.post("/api/search_product", (req,res) =>{
+    const user_id = req.body.userID;
     const product = '%' + req.body.ProductName + '%'
-    console.log(product)
-    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0"
-    con.query(sqlSearchProduct, [product], (err, result) => {
-        if (err) {
+    console.log(product) 
+    const sqlSearchProduct = "SELECT DISTINCT user.UserName, product.ProductName, product.type, product.brandName, product.color, product.productID, user.userID FROM product JOIN user ON product.userID = user.userID WHERE ProductName LIKE ? AND product.isBorrowed = 0 AND product.userID <> ?"
+    con.query(sqlSearchProduct, [product,user_id], (err,result) => {
+        if(err){
             console.error("Database search for product failed: " + err.stack)
-            return;
+            return; 
         }
-        else {
-            if (result.length > 0) {
+        else{
+            if(result.length > 0){
                 console.log(result)
                 //alert("Product Found")
                 res.send(result)
@@ -215,7 +216,7 @@ app.post("/api/insert_product", (req, res) => {
     const r = req.body.releaseYear
     const c = req.body.color
     const sqlInsert = "INSERT INTO Product (`ProductName`, `type`, `brandName`, `modelNumber`, `releaseYear`, `color`, `userID`) VALUES ( ?,?,?,?,?,?,?);"
-    con.query(sqlInsert, [name, type, b, m, r, c, userID], (err, result) => {
+    con.query(sqlInsert, [name, type, b,m,r,c,userID], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
             return;
@@ -247,38 +248,38 @@ app.post('/mongo/find', async (req, res) => {
     var friends_list;
     let u_id = req.body.userID
     console.log(u_id)
-    let query = { user_id: u_id }
+    let query = {user_id: u_id}
     let foods = await userModel.find(query);
-    try {
-        console.log(foods)
-        res.send(foods);
-        friends_list = foods[0].friend_list
+    try { 
+      console.log(foods)
+      res.send(foods);
+      friends_list = foods[0].friend_list
     } catch (err) {
-        res.status(500).send(err);
+      res.status(500).send(err);
     }
-
-    // var not_friends = [];
-    // var new_list = [];
-    // var zip = [];
-    // //try to find all users
-    //     const sql = "Select userID, zipCode From user where userID <> ?"
-    //      con.query(sql, u_id, (err, result) => {
-    //         if (result.length > 0) {
-    //             for (const res of result) {
-    //                 new_list.push(res.userID)
-    //                 zip.push(res.zipCode)
-    //             }
-    //             res.send(result)
-    //         }
-
-    //     })
-    //     console.log(zip)
-
-});
-
-app.post("/mongo/find_notfriends", (req, res) => {
+    
+// var not_friends = [];
+// var new_list = [];
+// var zip = [];
+// //try to find all users
+//     const sql = "Select userID, zipCode From user where userID <> ?"
+//      con.query(sql, u_id, (err, result) => {
+//         if (result.length > 0) {
+//             for (const res of result) {
+//                 new_list.push(res.userID)
+//                 zip.push(res.zipCode)
+//             }
+//             res.send(result)
+//         }
+       
+//     })
+//     console.log(zip)
+ 
+  });
+  
+  app.post("/mongo/find_notfriends", (req, res) => {
     const user_ID = req.body.userID
-
+   
     const sqlSearch = "SELECT userID FROM user WHERE userID <> ?"
     con.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
@@ -286,7 +287,7 @@ app.post("/mongo/find_notfriends", (req, res) => {
             return;
         } else {
             if (result.length > 0) {
-                //console.log(result)
+                console.log(result)
                 res.send(result)
             }
             else { res.send({ message: "empty products" }) }
@@ -296,32 +297,32 @@ app.post("/mongo/find_notfriends", (req, res) => {
 
 var s = "";
 app.post("/find_zipcodes", (req, res) => {
-
+    
     const user_ID = req.body.userID
     let not = req.body.not_friends
-    //console.log(not)
+   //console.log(not)
 
 
     const sqlSearch = "SELECT zipCode FROM user WHERE userID = ? "
     con.query(sqlSearch, not, (err, result) => {
         if (err) {
             return;
-        }
+        } 
         else {
             if (result.length > 0) {
-                //  console.log(result)
+                console.log(result)
                 res.send(result)
             }
         }
     })
-
+   
 })
 
-app.post("/api/borrow_product", (req, res) => {
+app.post("/api/borrow_product",(req,res) => {
     const productID = req.body.ProductID
     const borrowerID = req.body.BorrowerID
     const ownerID = req.body.OwnerID
-    const DueDate = req.body.dueDate
+    const DueDate = req.body.dueDate 
     const BorrowDate = req.body.borrowDate
 
     const sqlInsert = "INSERT INTO borrowinfo (productID, borrowerID, ownerID, DueDate, BorrowDate) VALUES (?,?,?,?,?);"
@@ -331,7 +332,7 @@ app.post("/api/borrow_product", (req, res) => {
             return;
         }
         else {
-            //console.log(result)
+            console.log(result)
         }
     })
 
@@ -352,37 +353,37 @@ app.post("/api/borrow_product", (req, res) => {
 
 
 app.post("/find_coordinates", (req, res) => {
-
+    
     let zipcode = req.body.zipcodes
     //console.log(not)
+ 
+ 
+     const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
+     con.query(sqlSearch, zipcode, (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+                 res.send(result)
+             }
+         }
+     })
+    
+ })
 
 
-    const sqlSearch = "SELECT lat,lng FROM zipcodes WHERE zip = ? "
-    con.query(sqlSearch, zipcode, (err, result) => {
-        if (err) {
-            return;
-        }
-        else {
-            if (result.length > 0) {
-                //console.log(result)
-                res.send(result)
-            }
-        }
-    })
-
-})
 
 
 
-
-
-app.post('/mongo/add', async function (req, res) {
+app.post('/mongo/add',async function (req, res) {
     const question = new userModel(req.body);
     try {
         await question.save();
-        res.status(201).send({ message: "OK", data: question });
+        res.status(201).send({message: "OK", data: question});
     } catch (err) {
-        res.status(404).send({ message: "Error", data: err })
+        res.status(404).send({message: "Error", data: err})
     }
 });
 
@@ -391,110 +392,122 @@ app.post('/mongo/add', async function (req, res) {
 
 
 app.post("/types", (req, res) => {
-
+    console.log("NOT_FRIENDS /TYPES POST",req.body.not_friends)
     let user_id = req.body.userID
     let notfriends = req.body.not_friends
-
+    
     let person1 = notfriends[0];
     let person2 = notfriends[1];
     let person3 = notfriends[2];
-    //console.log(notfriends)
-
+    //console.log(not)
+    
     let user_list = [];
     let person1_list = [];
     let person2_list = [];
     let person3_list = [];
 
-    let count_user = 0;
+    let count_user =0;
     let c1 = 0;
-    let c2 = 0;
+    let c2 =0;
     let c3 = 0;
+ 
+     const sqlSearch = "SELECT userID,type, Count(type) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by type, userID"
 
-    const sqlSearch = "SELECT userID,type, Count(type) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by type, userID"
-
-    con.query(sqlSearch, [user_id, person1, person2, person3], (err, result) => {
-        if (err) {
-            return;
-        }
-        else {
-            if (result.length > 0) {
-                //console.log(result)
-
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].userID == user_id) {
-                        user_list.push({ type: result[i].type, num: result[i].num })
-                        count_user = count_user + 1
-                    }
-                    if (result[i].userID == person1) {
-                        // console.log(result[i].userID)
-                        person1_list.push({ type: result[i].type, num: result[i].num })
-                        c1 = c1 + 1;
-                    }
-                    else if (result[i].userID == person2) {
-                        person2_list.push({ type: result[i].type, num: result[i].num })
-                        c2 = c2 + 1;
-                    }
-                    else if (result[i].userID == person3) {
-                        person3_list.push({ type: result[i].type, num: result[i].num })
-                        c3 = c3 + 1;
-                    }
-                }
-
-                JSON.stringify(user_list);
-                JSON.stringify(person1_list);
-                JSON.stringify(person2_list);
-                JSON.stringify(person3_list);
-                //console.log(person1_list)
-                let total = [];
-                let t1 = 0;
-                let t2 = 0;
-                let t3 = 0;
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c1; j++) {
-                        if (user_list[i].type == person1_list[j].type) {
-                            t1 = t1 + person1_list[j].num;
+     con.query(sqlSearch, [user_id,person1,person2,person3], (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+              
+                 for (var i = 0; i <result.length; i++)
+                 {
+                     if(result[i].userID == user_id)
+                     {
+                        user_list.push({type:result[i].type,num:result[i].num})
+                        count_user = count_user +1
+                     }
+                     if(result[i].userID == person1)
+                     {
+                         console.log(result[i].userID)
+                        person1_list.push({type:result[i].type,num:result[i].num})
+                        c1 = c1+ 1;
+                     }
+                     else if(result[i].userID == person2)
+                     {
+                        person2_list.push({type:result[i].type,num:result[i].num})
+                        c2 = c2+ 1;
+                     }
+                     else if(result[i].userID == person3)
+                     {
+                        person3_list.push({type:result[i].type,num:result[i].num})
+                        c3 = c3+ 1;
+                     }
+                 }
+              
+                 JSON.stringify(user_list);
+                 JSON.stringify(person1_list);
+                 JSON.stringify(person2_list);
+                 JSON.stringify(person3_list);
+                 console.log(person1_list)
+                 let total = [];
+                 let t1 = 0; 
+                 let t2 = 0;
+                 let t3 = 0; 
+                for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c1; j++)
+                        {
+                            if(user_list[i].type == person1_list[j].type )
+                            {
+                                t1 = t1+ person1_list[j].num;
+                            }
                         }
-                    }
-                }
-                total.push(t1)
-
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c2; j++) {
-                        if (user_list[i].type == person2_list[j].type) {
-                            t2 = t2 + person2_list[j].num;
+                 }
+                 total.push(t1)
+                
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c2; j++)
+                        {
+                            if(user_list[i].type == person2_list[j].type )
+                            {
+                                t2 = t2+ person2_list[j].num;
+                            }
                         }
-                    }
-                }
-                total.push(t2)
+                 }
+                 total.push(t2)
 
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c3; j++) {
-                        if (user_list[i].type == person3_list[j].type) {
-                            t3 = t3 + person3_list[j].num;
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c3; j++)
+                        {
+                            if(user_list[i].type == person3_list[j].type )
+                            {
+                                t3 = t3+ person3_list[j].num;
+                            }
                         }
-                    }
+                 }
+                 total.push(t3)
+
+
+
+
+                 res.send(total.toString())
+             
                 }
-                total.push(t3)
+
+         }
+     })
+    
+ })
 
 
 
-
-                res.send(total.toString())
-
-            }
-
-        }
-    })
-
-})
-
-
-
-
-app.post("/brandname", (req, res) => {
 
  app.post("/brandname", (req, res) => {
     
@@ -505,141 +518,111 @@ app.post("/brandname", (req, res) => {
     let person2 = notfriends[1];
     let person3 = notfriends[2];
     //console.log(not)
-
+    
     let user_list = [];
     let person1_list = [];
     let person2_list = [];
     let person3_list = [];
 
-    let count_user = 0;
+    let count_user =0;
     let c1 = 0;
-    let c2 = 0;
+    let c2 =0;
     let c3 = 0;
+ 
+     const sqlSearch = "SELECT userID, brandName as type, Count(brandName) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by brandName, userID"
 
-    const sqlSearch = "SELECT userID, brandName as type, Count(brandName) as num FROM sys.Product where userID = ? or userID = ? or userID = ? or userID = ? group by brandName, userID"
-
-    con.query(sqlSearch, [user_id, person1, person2, person3], (err, result) => {
-        if (err) {
-            return;
-        }
-        else {
-            if (result.length > 0) {
-                //console.log(result)
-
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].userID == user_id) {
-                        user_list.push({ type: result[i].type, num: result[i].num })
-                        count_user = count_user + 1
-                    }
-                    if (result[i].userID == person1) {
-                        // console.log(result[i].userID)
-                        person1_list.push({ type: result[i].type, num: result[i].num })
-                        c1 = c1 + 1;
-                    }
-                    else if (result[i].userID == person2) {
-                        person2_list.push({ type: result[i].type, num: result[i].num })
-                        c2 = c2 + 1;
-                    }
-                    else if (result[i].userID == person3) {
-                        person3_list.push({ type: result[i].type, num: result[i].num })
-                        c3 = c3 + 1;
-                    }
-                }
-
-                JSON.stringify(user_list);
-                JSON.stringify(person1_list);
-                JSON.stringify(person2_list);
-                JSON.stringify(person3_list);
-                //console.log(person1_list)
-                let total = [];
-                let t1 = 0;
-                let t2 = 0;
-                let t3 = 0;
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c1; j++) {
-                        if (user_list[i].type == person1_list[j].type) {
-                            t1 = t1 + person1_list[j].num;
+     con.query(sqlSearch, [user_id,person1,person2,person3], (err, result) => {
+         if (err) {
+             return;
+         } 
+         else {
+             if (result.length > 0) {
+                 console.log(result)
+              
+                 for (var i = 0; i <result.length; i++)
+                 {
+                     if(result[i].userID == user_id)
+                     {
+                        user_list.push({type:result[i].type,num:result[i].num})
+                        count_user = count_user +1
+                     }
+                     if(result[i].userID == person1)
+                     {
+                         console.log(result[i].userID)
+                        person1_list.push({type:result[i].type,num:result[i].num})
+                        c1 = c1+ 1;
+                     }
+                     else if(result[i].userID == person2)
+                     {
+                        person2_list.push({type:result[i].type,num:result[i].num})
+                        c2 = c2+ 1;
+                     }
+                     else if(result[i].userID == person3)
+                     {
+                        person3_list.push({type:result[i].type,num:result[i].num})
+                        c3 = c3+ 1;
+                     }
+                 }
+              
+                 JSON.stringify(user_list);
+                 JSON.stringify(person1_list);
+                 JSON.stringify(person2_list);
+                 JSON.stringify(person3_list);
+                 console.log(person1_list)
+                 let total = [];
+                 let t1 = 0; 
+                 let t2 = 0;
+                 let t3 = 0; 
+                for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c1; j++)
+                        {
+                            if(user_list[i].type == person1_list[j].type )
+                            {
+                                t1 = t1+ person1_list[j].num;
+                            }
                         }
-                    }
-                }
-                total.push(t1)
-
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c2; j++) {
-                        if (user_list[i].type == person2_list[j].type) {
-                            t2 = t2 + person2_list[j].num;
+                 }
+                 total.push(t1)
+                
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c2; j++)
+                        {
+                            if(user_list[i].type == person2_list[j].type )
+                            {
+                                t2 = t2+ person2_list[j].num;
+                            }
                         }
-                    }
-                }
-                total.push(t2)
+                 }
+                 total.push(t2)
 
-                for (var i = 0; i < count_user; i++) {
-
-                    for (var j = 0; j < c3; j++) {
-                        if (user_list[i].type == person3_list[j].type) {
-                            t3 = t3 + person3_list[j].num;
+                 for( var i = 0; i < count_user; i++)
+                 {
+                    
+                        for(var  j= 0;  j < c3; j++)
+                        {
+                            if(user_list[i].type == person3_list[j].type )
+                            {
+                                t3 = t3+ person3_list[j].num;
+                            }
                         }
-                    }
+                 }
+                 total.push(t3)
+
+
+
+
+                 res.send(total.toString())
+             
                 }
-                total.push(t3)
 
-
-
-
-                res.send(total.toString())
-
-            }
-
-        }
-    })
-
-})
-
-app.post("/get_friend_recommendation", (req, res) => {
-    const person1 = req.body.friendID1;
-    const person2 = req.body.friendID2;
-    const person3 = req.body.friendID3;
-    console.log(person1)
-    console.log(person2)
-    console.log(person3)
-
-
-
-
-    const sqlInsert = "Select UserName, FirstName, LastName From User where userID = ?  UNION Select UserName, FirstName, LastName From User where userID = ?  UNION  Select UserName, FirstName, LastName From User where userID = ? ;"
-    con.query(sqlInsert, [person1, person2, person3], (err, result) => {
-        console.log(result)
-        if (err) {
-            console.error('Database insert into borrowinfo failed: ' + err.stack);
-            return;
-        }
-        else {
-
-            res.send(result)
-        }
-    })
-})
-
-app.post("/api/get_product_reccomendation", (req, res) => {
-    const user_id = req.body.user_id
-    console.log('here')
-    const sqlPR = "CALL getReccomendedProducts(?)"
-    con.query(sqlPR, [user_id], (err, result) => {
-        if (err) {
-            return
-        }
-        else {
-            if (result.length > 0) {
-                console.log(result)
-                res.send(result)
-            }
-        }
-
-
-    })
-})
+         }
+     })
+    
+ })
 
  app.post("/get_friend_recommendation",(req,res) => {
     const person1 = req.body.friendID1;
@@ -692,5 +675,24 @@ app.post("/api/get_product_reccomendation", (req, res) => {
                  }
              });   
 });
+
+app.post("/api/get_product_reccomendation", (req, res) => {
+    const user_id = req.body.user_id
+    console.log('here')
+    const sqlPR = "CALL getReccomendedProducts(?)"
+    con.query(sqlPR, [user_id], (err, result) => {
+        if (err) {
+            return
+        }
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+        }
+
+
+    })
+})
 
 app.listen(3001, () => { console.log("running on 3001"); });
