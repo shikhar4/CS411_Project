@@ -18,8 +18,8 @@ class BorrowedItems extends Component {
         this.add_entry = this.add_entry.bind(this)
         this.refreshTable = this.refreshTable.bind(this)
     }
-    add_entry(UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID){
-      const product_arr = {UserName, productName, brandName, DueDate, BorrowDate,borrowerID, ownerID,productID}
+    add_entry(UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID,isBorrowed){
+      const product_arr = {UserName, productName, brandName, DueDate, BorrowDate,borrowerID, ownerID,productID,isBorrowed}
       this.setState(prevState =>({
         product_table : [...prevState.product_table, product_arr]
       }))
@@ -34,7 +34,7 @@ class BorrowedItems extends Component {
           for(var i = 0; i < res.data.length; i++)
           { 
             var x = res.data[i]
-            this.add_entry(x.UserName, x.productName,x.brandName, x.DueDate, x.BorrowDate,x.borrowerID, x.ownerID,x.productID)
+            this.add_entry(x.UserName, x.productName,x.brandName, x.DueDate, x.BorrowDate,x.borrowerID, x.ownerID,x.productID, x.isBorrowed)
           }
         
         })
@@ -47,7 +47,16 @@ class BorrowedItems extends Component {
         head.push(<th key={'DueDate'}>{'Borrow  Date'}</th>)
 
         for(var i = 0; i < this.state.product_table.length; i++){
-          const {UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID} = this.state.product_table[i]
+          const {UserName, productName, brandName, DueDate, BorrowDate, borrowerID, ownerID,productID,isBorrowed} = this.state.product_table[i]
+          var button; 
+          if(isBorrowed)
+          {
+            button = <Link to = '/borrowed_items'><Button onClick = {()=>this.returnItem(borrowerID,ownerID,productID)}> Return Item </Button></Link>
+          }
+          else
+          {
+            button = "Already Returned"
+          }
           console.log(borrowerID, ownerID, productID)
           table_data.push(
             <tr>
@@ -56,7 +65,7 @@ class BorrowedItems extends Component {
               <td>{brandName}</td>
               <td>{DueDate}</td>
               <td>{BorrowDate}</td>
-              <td><Link to = '/borrowed_items'><Button onClick = {()=>this.returnItem(borrowerID,ownerID,productID)}> Return Item </Button></Link></td>
+              <td>{button}</td>
             </tr>)
         }
       }
