@@ -6,7 +6,7 @@ var head = [];
 var table_data = [];
 
 
-class Prod_Reccomender extends Component {
+class ProdReccomender extends Component {
 
     constructor(props) {
         super(props);
@@ -109,4 +109,4 @@ class Prod_Reccomender extends Component {
 }
 
 
-export default Prod_Reccomender;
+export default ProdReccomender;
