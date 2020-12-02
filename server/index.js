@@ -182,6 +182,24 @@ app.post("/api/search_product", (req,res) =>{
     })
 })
 
+app.post("/api/get_friend_information", (req,res) => {
+    const friend_ID = req.body.friendID;
+    console.log("FRIENDID PASSED", friend_ID)
+    const sqlSearch = "SELECT DISTINCT user.UserName, user.FirstName, user.LastName, user.zipCode FROM user WHERE userID = ?"
+    con.query(sqlSearch, friend_ID, (err, result) => {
+        if (err) {
+            return;
+        } 
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+        }
+    })
+
+})
+
 app.post("/api/update", (req, res) => {
     const password = req.body.password
     const firstName = req.body.firstName
