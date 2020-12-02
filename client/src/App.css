@@ -114,6 +114,12 @@ body{
   margin-left:20px;
   margin-right:20px;
 }
+#Friends_Table{
+  visibility:visible;
+  width : 80%;
+  margin-left:20px;
+  margin-right:20px;
+}
 /* .table{
   margin-left:20px;
   margin-right:20px;
