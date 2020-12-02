@@ -56,7 +56,7 @@ app.post("/api/delete", (req, res) => {
     const user_name = req.body.user
     const product_name = req.body.product
 
-    const sqlDelete = "DELETE FROM product WHERE userID = ? AND ProductName = ?"
+    const sqlDelete = "DELETE FROM product WHERE userID = ? AND productID = ?"
     con.query(sqlDelete, [user_name, product_name], (err, result) => {
         if (err) {
             console.error('Database insert failed: ' + err.stack);
@@ -693,5 +693,24 @@ app.post("/types", (req, res) => {
                  }
              });   
 });
+
+app.post("/api/get_product_reccomendation", (req, res) => {
+    const user_id = req.body.user_id
+    console.log('here')
+    const sqlPR = "CALL getReccomendedProducts(?)"
+    con.query(sqlPR, [user_id], (err, result) => {
+        if (err) {
+            return
+        }
+        else {
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result)
+            }
+        }
+
+
+    })
+})
 
 app.listen(3001, () => { console.log("running on 3001"); });

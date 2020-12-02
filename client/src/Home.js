@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Axios from 'axios'
 import Delete from './Delete';
 import Insert from './insert1';
+import ProdReccomender from './reccomend_product'
 import { Button, FormGroup, FormControl, FormLabel,Form } from "react-bootstrap";
 import {Link} from 'react-router-dom';
 const columnHeader =["ProductID","ProductName","Type","BrandName","ModelNumber","ReleaseYear", "Color"];
@@ -29,7 +30,8 @@ class Home extends Component {
          product_table:[],
          friend_table:[],
          showInsertComponent: false,
-         showDeleteComponent: false
+         showDeleteComponent: false,
+         showRecommendComponent: false
        }
        
        this.clearAccountInfo = this.clearAccountInfo.bind(this);
@@ -38,7 +40,11 @@ class Home extends Component {
        this.loadInsertTable = this.loadInsertTable.bind(this)
        this.loadDeleteTable = this.loadDeleteTable.bind(this)
        this.getFriendData = this.getFriendData.bind(this)
+
+       this.loadRecommendData = this.loadRecommendData.bind(this)
+
        this.add_friend = this.add_friend.bind(this)
+
       //  this.add_entry = this.add_entry(this);
    }
 
@@ -147,7 +153,10 @@ class Home extends Component {
     document.getElementById("Items_Table").style.visibility = "visible";
     this.setState({showInsertComponent : false})
     this.setState({showDeleteComponent : false})
+
+    this.setState({showRecommendComponent : false})
     document.getElementById("Friends_Table").style.visibility = "hidden"
+
     console.log(this.state.showInsertComponent)
     Axios.post('http://localhost:3001/api/search',
     {userID:localStorage.getItem("user_id_global")}).then((res)=>{
@@ -201,7 +210,7 @@ class Home extends Component {
      document.getElementById("Items_Table").style.visibility = "hidden";
      document.getElementById("Friends_Table").style.visibility = "hidden"
      this.setState({showDeleteComponent:false})
-
+     this.setState({showRecommendComponent:false})
      this.setState({showInsertComponent:true})
      //console.log(this.state.showInsertComponent)
 
@@ -210,8 +219,14 @@ class Home extends Component {
      document.getElementById("Items_Table").style.visibility = "hidden"
      document.getElementById("Friends_Table").style.visibility = "hidden"
      this.setState({showInsertComponent:false})
-
+     this.setState({showRecommendComponent:false})
      this.setState({showDeleteComponent:true})
+   }
+   loadRecommendData(){
+    document.getElementById("Items_Table").style.visibility = "hidden"
+    this.setState({showInsertComponent:false})
+    this.setState({showDeleteComponent:false})
+    this.setState({showRecommendComponent:true})
    }
    render(){
     
@@ -223,11 +238,13 @@ class Home extends Component {
             <Col md = "auto"><Button onClick = {this.loadInsertTable} >Insert Item</Button></Col>
             <Col md = "auto"><Button onClick = {this.loadDeleteTable} >Delete Item</Button></Col>
             <Col md = "auto"><Button onClick = {this.getFriendData}> My Friends</Button></Col>
+            <Col md = "auto"><Button onClick = {this.loadRecommendData}> Recommend Products</Button></Col>
           </Row>
           </Container>
       
        <div>{this.state.showInsertComponent ? <Insert/> : null}</div>
        <div>{this.state.showDeleteComponent ? <Delete/> : null}</div>
+       <div>{this.state.showRecommendComponent ? <ProdReccomender/> : null}</div>
       <div>
         <table className = "table table-hover" id = "Items_Table">
         <thead>

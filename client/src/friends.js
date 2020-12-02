@@ -12,8 +12,13 @@ var not_friends = [];
 var friends_table_data = []
 var head = []
 
+const columnHeader =["Username","FirstName","LastName"];
+var product_table =[];
+product_table.push({UserName:0,FirstName:0,LastName:0})
 
-
+function add_entry(UserName,FirstName,LastName){
+  product_table.push({UserName,FirstName,LastName})
+}
 class friends extends Component {
 
    constructor(props){
@@ -125,6 +130,7 @@ calculate_distance(lat1,lon1,lat2,lon2){
 //this function should return top 3 distances   
 Friend_Recommender(user_id)
 {  
+
     var x = 0;
     if(localStorage.getItem("user_id_global") == 0 ){
       alert("Please Login for Friend Recommendations!")
@@ -257,7 +263,7 @@ Friend_Recommender(user_id)
   {
     this.setState({friends_recommendation_table: []})
         let closest_distances = []
-        var not_3_not_friends_array = [0,0,0]
+        var not_3_not_friends_array = [0,0,0];
         this.setState({distances: []})
         for(var i =1; i<this.state.lat_long.length; i++){
             var not_friend_lat = this.state.lat_long[i].lat_long.lat; 
@@ -308,9 +314,9 @@ Friend_Recommender(user_id)
             }
           }
 
-          console.log("min1",temp_min_index1)
-          console.log("min2",temp_min_index2)
-          console.log("min3", temp_min_index3)
+          //console.log("min1",temp_min_index1)
+          //console.log("min2",temp_min_index2)
+          //console.log("min3", temp_min_index3)
           
           console.log("NOT_FRIENDS",not_friends)
 
@@ -330,6 +336,7 @@ Friend_Recommender(user_id)
            
         }
 
+        
 
 
         //api call /types
@@ -343,7 +350,7 @@ Friend_Recommender(user_id)
           }
         )
 
-        console.log(this.state.friends_types.type)
+       
         
 
         //api call /brandname
@@ -353,32 +360,16 @@ Friend_Recommender(user_id)
         {userID: localStorage.getItem("user_id_global"), not_friends: this.state.closest_distance_not_friends}).then(
           (res) => {
             this.add_friends_brandnames(res.data)
-            console.log(res.data) 
+            
             brandname_string = this.state.friends_brandnames.brandname.split(',')
             //console.log(brandname_string[0])
             
           }
         )
         
-        console.log(brandname_string)
-       
-        //sum everything up
-        //divide each # by sum 
-        //multiply by -1
 
-        // var min = 99999;
-        // var max = 0;
-        // if(this.state.distances.length > 7){
-        //   for (var i = 0; i < this.state.distances.length; i++) {
-        //     if (this.state.distances[i].distance < min) {
-        //       min = this.state.distances[i].distance
-        //     }
-  
-        //     if (this.state.distances[i].distance> max) {
-        //       max = this.state.distances[i].distance
-        //     }
-        //   }
-        // }
+       
+
         var total = 0;
         for(var i = 0; i<closest_distances.length; i++){
           total += closest_distances[i]
@@ -463,6 +454,33 @@ Friend_Recommender(user_id)
   }//fat if
 }
 
+generateHeader(){
+  let res=[];
+for(var i =0; i < columnHeader.length; i++){
+    res.push(<th key={columnHeader[i]}>{columnHeader[i]}</th>)
+}
+return res;
+}
+generateTableData(){
+
+     let res=[];
+     let tableData = product_table;
+     //""ProductID","Product Name","Type","Brand Name","Model Number","Release Year", "Color""
+     if(tableData.length > 2)
+     {
+     for(var i =1; i < 4; i++){
+         res.push(
+          <tr >
+         <td key={tableData[i].UserName}>{tableData[i].UserName}</td>
+         <td>{tableData[i].FirstName}</td>
+         <td>{tableData[i].LastName}</td>
+         </tr>
+ 
+         )
+     }
+    }
+     return res;
+ }
 
    render(){
         //this.Friend_Recommender()
