@@ -147,7 +147,7 @@ app.post("/api/return_item", (req,res) =>{
 app.post("/api/search_borrowed_items", (req, res) => {
     const user_ID = req.body.userID
 
-    const sqlSearch = "SELECT  u.UserName, p.productName, p.brandName, b.DueDate, b.BorrowDate, b.borrowerID, b.ownerID,b.productID, p.isBorrowed FROM (borrowinfo as b JOIN product as p ON b.productID = p.productID) JOIN user u ON u.userID = p.userID where b.borrowerID = ?"
+    const sqlSearch = "SELECT  u.UserName, p.productName, p.brandName, b.DueDate, b.BorrowDate, b.borrowerID, b.ownerID,b.productID, p.isBorrowed, p.type FROM (borrowinfo as b JOIN product as p ON b.productID = p.productID) JOIN user u ON u.userID = p.userID where b.borrowerID = ?"
     con.query(sqlSearch, [user_ID], (err, result) => {
         if (err) {
             console.error('Database search for borrowinfo failed: ' + err.stack);

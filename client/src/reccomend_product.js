@@ -2,6 +2,40 @@ import React, { Component } from 'react';
 import Axios from 'axios'
 import { Button, FormGroup, FormControl, FormLabel, Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+
+import {Pie, Doughnut} from 'react-chartjs-2';
+var fashion = 0;
+var electronics = 0;
+var misc = 0;
+var games = 0;
+var decor =0;
+
+const state = {
+  labels: ['Electronics', 'Fasion', 'Decor',
+           'Misc', 'Games'],
+  datasets: [
+    {
+      label: 'Rainfall',
+      backgroundColor: [
+        '#B21F00',
+        '#C9DE00',
+        '#2FDE00',
+        '#00A6B4',
+        '#6800B4'
+      ],
+      hoverBackgroundColor: [
+      '#501800',
+      '#4B5000',
+      '#175000',
+      '#003350',
+      '#35014F'
+      ],
+      
+      data: [localStorage.getItem("e"), localStorage.getItem("f"), localStorage.getItem("d"), localStorage.getItem("m"), localStorage.getItem("g")]
+    }
+  ]
+}
+
 var head = [];
 var table_data = [];
 
@@ -11,7 +45,38 @@ class ProdReccomender extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            productInfo: []
+            productInfo: [],
+            e : 10,
+            m: 20,
+            f:20,
+            g:20,
+            d:30,
+
+
+            s:{
+                labels: ['Electronics', 'Fasion', 'Decor',
+                         'Misc', 'Games'],
+                datasets: [
+                  {
+                    label: 'Rainfall',
+                    backgroundColor: [
+                      '#B21F00',
+                      '#C9DE00',
+                      '#2FDE00',
+                      '#00A6B4',
+                      '#6800B4'
+                    ],
+                    hoverBackgroundColor: [
+                    '#501800',
+                    '#4B5000',
+                    '#175000',
+                    '#003350',
+                    '#35014F'
+                    ],
+                    data: [localStorage.getItem("e"), localStorage.getItem("f"), localStorage.getItem("d"), localStorage.getItem("m"), localStorage.getItem("g")]
+                  }
+                ]
+              }
         }
         this.generateSearchBar = this.generateSearchBar.bind(this);
         this.searchProduct = this.searchProduct.bind(this);
@@ -35,6 +100,8 @@ class ProdReccomender extends Component {
 
     }
     searchProduct() {
+       
+
         head = []
         table_data = [];
         this.setState({ productInfo: [] })
@@ -102,6 +169,47 @@ class ProdReccomender extends Component {
                         </tbody>
                     </table>
                 </div>
+
+                <div>
+        <Pie
+          data={{
+            labels: ['Electronics', 'Fasion', 'Decor',
+                     'Misc', 'Games'],
+            datasets: [
+              {
+                label: 'Rainfall',
+                backgroundColor: [
+                  '#B21F00',
+                  '#C9DE00',
+                  '#2FDE00',
+                  '#00A6B4',
+                  '#6800B4'
+                ],
+                hoverBackgroundColor: [
+                '#501800',
+                '#4B5000',
+                '#175000',
+                '#003350',
+                '#35014F'
+                ],
+                
+                data: [localStorage.getItem("e"), localStorage.getItem("f"), localStorage.getItem("d"), localStorage.getItem("m"), localStorage.getItem("g")]
+              }
+            ]
+          }}
+          options={{
+            title:{
+              display:true,
+              text:'My Borrowing Stats',
+              fontSize:20
+            },
+            legend:{
+              display:true,
+              position:'right'
+            }
+          }}
+        />
+      </div>
             </>
         )
 

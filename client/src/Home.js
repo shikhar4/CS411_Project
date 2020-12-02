@@ -207,7 +207,14 @@ class Home extends Component {
     localStorage.setItem("phonenumber_global", "");
     localStorage.setItem("zipcode_global", "");
     localStorage.setItem("password_global", "");
+    localStorage.setItem("user_id_global", "");
+    localStorage.setItem("e", 0);
+    localStorage.setItem("d", 0);
+    localStorage.setItem("m", 0);
+    localStorage.setItem("f", 0);
+    localStorage.setItem("g", 0);
    }
+
    loadInsertTable(){
      document.getElementById("Items_Table").style.visibility = "hidden";
      document.getElementById("Friends_Table").style.visibility = "hidden"

@@ -31,12 +31,51 @@ class BorrowedItems extends Component {
       Axios.post('http://localhost:3001/api/search_borrowed_items',
         {userID:localStorage.getItem("user_id_global")}).then((res)=>{
           product_table = [];
+          var e = 0;
+          var d =0;
+          var g =0;
+          var m =0;
+          var f =0;
           for(var i = 0; i < res.data.length; i++)
           { 
+            
             var x = res.data[i]
+            
+            if(x.type === "Electronics")
+            {
+              e = e + 1;
+            }
+
+            else if(x.type === "Decor")
+            {
+              
+              d = d + 1;
+            }
+            else if(x.type === "Games")
+            {
+              g = g + 1;
+            }
+           else if(x.type === "Fashion")
+            {
+              f = f + 1;
+            }
+
+          else  if(x.type === "Misc")
+            {
+              m = m + 1;
+            }
             this.add_entry(x.UserName, x.productName,x.brandName, x.DueDate, x.BorrowDate,x.borrowerID, x.ownerID,x.productID, x.isBorrowed)
           }
-        
+          console.log(e)
+          console.log(d)
+          console.log(m)
+          console.log(f)
+          console.log(g)
+          localStorage.setItem("e", e);
+          localStorage.setItem("d", d);
+          localStorage.setItem("m", m);
+          localStorage.setItem("f", f);
+          localStorage.setItem("g", g);
         })
       this.setState({product_table:[]})
       if(this.state.product_table.length > 0){
