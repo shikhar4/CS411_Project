@@ -67,7 +67,10 @@ class Home extends Component {
     document.getElementById("Friends_Table").style.visibility = "visible";
     this.setState({showInsertComponent : false})
     this.setState({showDeleteComponent : false})
+    this.setState({showRecommendComponent: false})
     document.getElementById("Items_Table").style.visibility = "collapse"
+
+
     friend_head = [] 
     friend_table_data = []
     this.setState({friend_table: []})
@@ -153,7 +156,6 @@ class Home extends Component {
     document.getElementById("Items_Table").style.visibility = "visible";
     this.setState({showInsertComponent : false})
     this.setState({showDeleteComponent : false})
-
     this.setState({showRecommendComponent : false})
     document.getElementById("Friends_Table").style.visibility = "hidden"
 
@@ -212,7 +214,7 @@ class Home extends Component {
      this.setState({showDeleteComponent:false})
      this.setState({showRecommendComponent:false})
      this.setState({showInsertComponent:true})
-     //console.log(this.state.showInsertComponent)
+     
 
    }
    loadDeleteTable(){
@@ -224,6 +226,7 @@ class Home extends Component {
    }
    loadRecommendData(){
     document.getElementById("Items_Table").style.visibility = "hidden"
+    document.getElementById("Friends_Table").style.visibility = "hidden"
     this.setState({showInsertComponent:false})
     this.setState({showDeleteComponent:false})
     this.setState({showRecommendComponent:true})

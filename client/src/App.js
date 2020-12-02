@@ -51,7 +51,7 @@ class App extends Component {
               <li><Link to={'/my_account'} className="nav-link">Account</Link></li>
 
               <li><Link to={'/friends'} className="nav-link">Friends</Link></li>
-              <li><Link to={'/reccomend_product'} className="nav-link">Feed</Link></li>
+              
               <li><Link to={'/borrowed_items'} className="nav-link">My Borrowed Items</Link></li>
               
 
@@ -70,7 +70,7 @@ class App extends Component {
             <Route path='/my_account' component={my_account} />
 
             <Route path='/friends' component={friends} />
-            <Route path='/reccomend_product' component={Prod_Reccomender} />
+            
             <Route path='/borrowed_items' component={BorrowedItems} />
 
           </Switch>
